@@ -1,15 +1,31 @@
 #include <stdio.h>
+#include <functional>
 #include "Registers.h"
+#include "CPU.h"
+#include "RAM.h"
+
+void testRegisters();
+void testRAM();
 
 int main()
 {
-	CPU::REGISTERS.af = 0xdead;
-	CPU::REGISTERS.bc = 0xbeef;
-	CPU::REGISTERS.de = 0xbabe;
-	CPU::REGISTERS.hl = 0xface;
-	CPU::REGISTERS.sp = 0xfeed;
-	CPU::REGISTERS.pc = 0x0000;
-
-	CPU::REGISTERS.printAsHex();
+	CPU::init();
+	RAM::init();
+#ifdef _DEBUG
+	//testRegisters();
+	testRAM();
+#endif
 	return 0;
+}
+
+void testRegisters()
+{
+	CPU::REGISTERS.setDebugValues();
+	CPU::REGISTERS.printAsHex();
+}
+
+void testRAM()
+{
+	RAM::setDebugValues();
+	RAM::dumpMemoryToFile("ram_dump.bin");
 }

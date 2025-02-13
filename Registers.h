@@ -57,6 +57,16 @@ namespace CPU
 			printf("%04X\n", sp);
 			printf("%04X\n", pc);
 		}
+
+		void setDebugValues()
+		{
+			af = 0xdead;
+			bc = 0xbeef;
+			de = 0xbabe;
+			hl = 0xface;
+			sp = 0xfeed;
+			pc = 0x0000;
+		}
 	}REGISTERS;
 }
 
