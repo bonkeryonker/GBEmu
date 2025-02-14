@@ -55,6 +55,9 @@ namespace RAM
 	// Returns the byte at the specified address in memory
 	uint8_t getItem(uint16_t address);
 
+	// Writes an ascii string starting at the specified address in memory
+	bool writeStringASCII(uint16_t startAddress, std::string value);
+
 	void setDebugValues();
 	bool dumpMemoryToFile(const std::string& filename);
 

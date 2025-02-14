@@ -26,6 +26,21 @@ void testRegisters()
 
 void testRAM()
 {
+	if (RAM::setItem(RAM::MemoryMap::ROMBANK00, 'L'))
+	{
+		printf("Test failed. Was able to write to cartridge ROM.\n");
+		return;
+	}
+	if (RAM::setItem(RAM::MemoryMap::ECHO, 'L'))
+	{
+		printf("Test failed. Was able to write to Echo RAM.\n");
+		return;
+	}
+	if (RAM::setItem(RAM::MemoryMap::FORBIDDEN, 'L'))
+	{
+		printf("Test failed. Was able to write to Forbidden RAM.\n");
+		return;
+	}
 	RAM::setDebugValues();
 	RAM::dumpMemoryToFile("ram_dump.bin");
 }
