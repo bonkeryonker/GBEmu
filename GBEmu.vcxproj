@@ -134,6 +134,7 @@
   <ItemGroup>
     <ClInclude Include="CPU.h" />
     <ClInclude Include="Globals.h" />
+    <ClInclude Include="Instruction.h" />
     <ClInclude Include="RAM.h" />
     <ClInclude Include="Registers.h" />
   </ItemGroup>
