@@ -1,70 +1,63 @@
 #include "RAM.h"
 
-void RAM::init()
+RAM::RAM()
 {
-	for (auto i = 0; i < 0xFFFF; i++)
-		RAM::ram[i] = 0x00;
+	this->ramBuf = new u8[RAM_SIZE + 1];
+	memset(this->ramBuf, 0x00, RAM_SIZE);
 }
 
-uint8_t RAM::getItem(uint16_t address)
+RAM::~RAM()
 {
-	//TODO: redirect addresses that point to cartridge to the cartridge memory
-	return RAM::ram[address];
+#ifdef _DEBUG
+	printf("Ram buffer deleted!\n");
+#endif
+	delete[] this->ramBuf;
 }
 
-bool RAM::setItem(uint16_t address, uint8_t value)
+u8 RAM::getItem(u16 address)
 {
-	// Return false if the passed address falls into cartridge ROM
-	if (address < RAM::MemoryMap::VRAM)
+	return this->ramBuf[address];
+}
+
+void RAM::setItem(u16 address, u8 value)
+{
+	this->ramBuf[address] = value;
+}
+
+bool RAM::writeStringASCII(u16 address, std::string value)
+{
+	//TODO: Fix writeStringsASCII writing single character values to singular byte locations (for now use RAM::setItem)
+	// Check length of string to ensure this is a valid write
+	if (address + value.length() - 1 > RAM_SIZE)
 	{
 #ifdef _DEBUG
-		printf("Address %04X is Cartridge ROM.\n", address);
+		printf("WriteStringsASCII failed. Attempted to over write buffer.\n");
+		printf("String: %s, size: %d bytes\n", value.c_str(), value.length());
+		printf("Starting address: %04X (Maximum %d bytes possible)\n", address, (RAM_SIZE - address));
 #endif
 		return false;
 	}
-	else
-	{
-		// Return false if the passed address falls into ranges forbidden by Nintendo
-		if ((address >= RAM::MemoryMap::ECHO) && (address < RAM::MemoryMap::OAM) ||
-			(address >= RAM::MemoryMap::FORBIDDEN) && (address < RAM::MemoryMap::IO))
-		{
-#ifdef _DEBUG
-			printf("Address %04X is forbidden by Nintendo.\n", address);
-#endif
-			return false;
-		}
-		// Redirect addresses stored on Cartridge RAM to the relevant accessor(s) and return true
-		else if ((address >= RAM::MemoryMap::EXTERNALRAM) && (address < RAM::MemoryMap::WRAM0))
-		{
-			// TODO: redirect address to external cartridge RAM
-			return true;
-		}
-		else
-		{
-			RAM::ram[address] = value;
-			return true;
-		}
-	}
-}
-
-bool RAM::writeStringASCII(uint16_t startAddress, std::string value)
-{
-	if (startAddress + value.length() > RAM_SIZE)
-	{
-		printf("writeStringASCII Failed: Attempted to write to illegal address.\n");
-		return false;
-	}
-	for (int i = 0; i < value.length(); i++)
-		setItem(startAddress + i, (uint8_t)value[i]);
+	
+	// If write is valid, then write
+	for (auto i = 0; i < value.length(); i++)
+		this->ramBuf[address + i] = value[i];
+	return true;
 }
 
 void RAM::setDebugValues()
 {
-	writeStringASCII(MemoryMap::VRAM, "This is the Video RAM!");
-	writeStringASCII(MemoryMap::WRAM0, "This is Working RAM 0!");
-	writeStringASCII(MemoryMap::WRAM1, "This is Working RAM 1!");
-	writeStringASCII(MemoryMap::OAM, "OAM RAM.");
-	writeStringASCII(MemoryMap::IO, "IO");
+	this->writeStringASCII(ROMBANK00, "ROMBANK00");
+	this->writeStringASCII(ROMBANK01_N, "ROMBANK01_N");
+	this->writeStringASCII(VRAM, "VRAM");
+	this->writeStringASCII(EXTERNALRAM, "EXTERNALRAM");
+	this->writeStringASCII(WRAM0, "WRAM0");
+	this->writeStringASCII(WRAM1, "WRAM1");
+	this->writeStringASCII(ECHO, "ECHO");
+	this->writeStringASCII(OAM, "OAM");
+	this->writeStringASCII(FORBIDDEN, "FORBIDDEN");
+	this->writeStringASCII(IO, "IO");
+	this->writeStringASCII(HRAM, "HRAM");
+	this->writeStringASCII(IE, "I");
 }
 
 bool RAM::dumpMemoryToFile(const std::string& filename)
@@ -75,7 +68,7 @@ bool RAM::dumpMemoryToFile(const std::string& filename)
 		printf("Unable to open file for writing\n");
 		return false;
 	}
-	outFile.write(reinterpret_cast<const char*>(RAM::ram), RAM_SIZE + 1);
+	outFile.write(reinterpret_cast<const char*>(this->ramBuf), RAM_SIZE + 1);
 	outFile.close();
 	return true;
 }
