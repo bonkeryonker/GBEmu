@@ -1,10 +1,11 @@
 #include "CPU.h"
 
-void CPU::init()
+CPU::CPU(std::shared_ptr<RAM>& ram)
 {
-	// Initialize program counter to 0
-	CPU::REGISTERS.pc = 0x0000;
+	this->registers.setDefaultValues();
+	this->ram_ptr = ram;	
 }
+
 void CPU::tick()
 {
 	printf("Tock!\n");
