@@ -32,7 +32,7 @@ bool RAM::writeStringASCII(u16 address, std::string value)
 	{
 #ifdef _DEBUG
 		printf("WriteStringsASCII failed. Attempted to over write buffer.\n");
-		printf("String: %s, size: %d bytes\n", value.c_str(), value.length());
+		printf("String: %s, size: %zd bytes\n", value.c_str(), value.length());
 		printf("Starting address: %04X (Maximum %d bytes possible)\n", address, (RAM_SIZE - address));
 #endif
 		return false;

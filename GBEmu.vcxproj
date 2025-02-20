@@ -127,11 +127,13 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Clock.cpp" />
     <ClCompile Include="CPU.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="RAM.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Clock.h" />
     <ClInclude Include="CPU.h" />
     <ClInclude Include="Globals.h" />
     <ClInclude Include="Instruction.h" />

@@ -6,10 +6,10 @@ CPU::CPU(std::shared_ptr<RAM>& ram)
 	this->ram_ptr = ram;
 }
 
-void CPU::tick()
-{
-	
-	switch (opcodeLookup[this->fetch()].opcode)
+unsigned short CPU::tick()
+{	
+	Instruction currentOp = opcodeLookup[this->fetch()];
+	switch (currentOp.opcode)
 	{
 	case NOP:
 		this->f_NOP();
@@ -21,6 +21,8 @@ void CPU::tick()
 		this->f_LD_ptr(this->registers.bc, this->registers.a);
 		break;
 	}
+
+	return currentOp.timing;
 }
 
 u8 CPU::fetch()

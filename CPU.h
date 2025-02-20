@@ -16,8 +16,9 @@ public:
 	// Public struct holding register data
 	REGISTERS registers;
 
-	// Do something
-	void tick();
+	// Fetch and execute the opcode at PC
+	// Returns: tCycleCount of executed operation (currentInstruction.timing)
+	unsigned short tick();
 
 	// Fetch the opcode at PC, identical to getU8Immediate(registers.pc) 
 	u8 fetch();
