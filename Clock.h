@@ -3,6 +3,7 @@
 #include <chrono>
 #include <thread>
 #include <iostream>
+#include <functional>
 #include "Globals.h"
 #include "CPU.h"
 #define _TEST
@@ -15,7 +16,7 @@ class Clock
 {
 public:
 	// Takes an std::function pointer to cpu's tick() function
-	static void tick();
+	static void tick(CPU& cpuRef);
 };
 
 #endif

@@ -1,12 +1,12 @@
 #include "Clock.h"
 
-void Clock::tick()
+void Clock::tick(CPU& cpuRef)
 {
 	// Start clock
 	auto startTime = std::chrono::high_resolution_clock::now();
 
 	// Run CPU.tick(), save the amount of t-cycles the operation requires
-	u8 operationCycleCount = 1;// = cpu.tick();
+	unsigned short operationCycleCount = cpuRef.tick();
 
 	// Stop the clock
 	auto endTime = std::chrono::high_resolution_clock::now();

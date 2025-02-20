@@ -1,5 +1,7 @@
 #include <stdio.h>
 #include <memory>
+#include <functional>
+#include "Clock.h"
 #include "Registers.h"
 #include "CPU.h"
 #include "RAM.h"
@@ -13,8 +15,8 @@ int main()
 	ram_ptr->setItem(ROMBANK00 + 3, LD_ptrBC_A);
 	CPU c(ram_ptr);
 	c.registers.a = 0xa1;
-	c.tick();
-	c.tick();
+	Clock::tick(c);
+	Clock::tick(c);
 	c.registers.printAsHex();
 	ram_ptr->dumpMemoryToFile();
 	return 0;
