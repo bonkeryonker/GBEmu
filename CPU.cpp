@@ -15,10 +15,10 @@ void CPU::tick()
 		this->f_NOP();
 		break;
 	case LD_BC_u16:
-		this->f_LD_BC_u16(this->getU16Immediate());
+		this->f_LD(this->registers.bc, this->getU16Immediate());
 		break;
 	case LD_ptrBC_A:
-		this->f_LD_ptrBC_A();
+		this->f_LD_ptr(this->registers.bc, this->registers.a);
 		break;
 	}
 }
@@ -48,12 +48,17 @@ void CPU::f_NOP()
 	return;
 }
 
-void CPU::f_LD_BC_u16(u16 data)
+void CPU::f_LD(u16& destReg, u16 data)
 {
-	this->registers.bc = data;
+	destReg = data;
 }
 
-void CPU::f_LD_ptrBC_A()
+void CPU::f_LD(u8& destReg, u8 data)
 {
-	this->ram_ptr->setItem(this->registers.bc, this->registers.a);
+	destReg = data;
+}
+
+void CPU::f_LD_ptr(u16& ramAddrReg, u8& dataReg)
+{
+	this->ram_ptr->setItem(ramAddrReg, dataReg);
 }

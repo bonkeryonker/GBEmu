@@ -36,8 +36,11 @@ private:
 	
 	void f_NOP();
 
-	void f_LD_BC_u16(u16 data);
+	// Load data into destination register (reference)
+	void f_LD(u16& destReg, u16 data);
+	void f_LD(u8& destReg, u8 data);
 
-	void f_LD_ptrBC_A();
+	// Load data from dataReg to ram address saved in ramAddrReg
+	void f_LD_ptr(u16& ramAddrReg, u8& dataReg);
 };
 #endif

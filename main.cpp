@@ -15,6 +15,7 @@ int main()
 	c.registers.a = 0xa1;
 	c.tick();
 	c.tick();
+	c.registers.printAsHex();
 	ram_ptr->dumpMemoryToFile();
 	return 0;
 }
