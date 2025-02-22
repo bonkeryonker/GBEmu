@@ -8,8 +8,14 @@
 enum Mnemonic
 {
 	NOP = 0x00,
-	LD_BC_u16, //Load two bytes of immediate data into BC
-	LD_ptrBC_A, //Store contents of A to the memory location specified by BC
+	LD_BC_u16, // Load two bytes of immediate data into BC
+	LD_ptrBC_A, // Store contents of A to the memory location specified by BC
+	INC_BC, // Increment BC register. (TODO: Why aren't alu flags needed for this?)
+	INC_B, // Increment B register.
+	DEC_B, // Decrement B register.
+	LD_B_u8, // Load one byte of immediate data into B
+	RLCA, // Bitshift left
+	LD_a16_SP, // Load the value of the stack pointer to the memory location specified by the u16 immediate
 };
 
 class Instruction

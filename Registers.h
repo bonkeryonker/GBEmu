@@ -12,6 +12,14 @@
 		macros to modify the structs below to represent the system.
 */
 
+enum FLAGS
+{
+	Z = 0x80, // Zero Flag
+	N = 0x40, // Subtract Flag	
+	H = 0x20, // Half-Carry Flag
+	C = 0x10, // Carry Flag
+};
+
 // Struct containing u8/u16 unions representing each gameboy register.
 struct REGISTERS {
 	union {
@@ -49,6 +57,14 @@ struct REGISTERS {
 	u16 sp; // Stack Pointer
 	u16 pc; // Program Counter
 
+	void setFlag(u8 flag, bool setTrue = true)
+	{
+		if (setTrue)
+			this->f |= flag;
+		else
+			this->f &= ~flag; // bitwise and with the complement of the flag
+	}
+
 	void printAsHex()
 	{
 		printf("%02X %02X\n", a, f);
@@ -61,11 +77,11 @@ struct REGISTERS {
 
 	void setDefaultValues()
 	{
-		af = 0xdead;
-		bc = 0xbeef;
-		de = 0xbabe;
-		hl = 0xface;
-		sp = 0xfeed;
+		af = 0x0000;
+		bc = 0x0000;
+		de = 0x0000;
+		hl = 0x0000;
+		sp = 0x0000;
 		pc = 0x0000;
 	}
 };
