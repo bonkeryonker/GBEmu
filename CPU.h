@@ -7,6 +7,7 @@
 #include "Instruction.h"
 class CPU
 {
+
 public:
 	// Sets all register values to default values
 	// Program counter set to 0
