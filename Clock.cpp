@@ -21,7 +21,7 @@ void Clock::tick(CPU& cpuRef)
 	auto sleepTime = (std::chrono::nanoseconds(static_cast<int>(M_CYCLE_NS)) * operationCycleCount) - elapsed;
 
 #if defined _DEBUG || defined _TEST
-	printf("Func took %lld ns, sleeping for the remaining %lld ns\n", elapsed.count(), sleepTime.count());
+	//printf("Func took %lld ns, sleeping for the remaining %lld ns\n", elapsed.count(), sleepTime.count());
 #endif
 	if (sleepTime.count() > 0)
 	{

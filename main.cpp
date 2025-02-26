@@ -16,7 +16,14 @@ int main()
 {
 	std::shared_ptr<RAM> ram_ptr = std::make_shared<RAM>();
 	CPU c(ram_ptr);
-	Cartridge::loadFromFile(ram_ptr, "testROMs/testCartridgeLoad.gb");
+	Cartridge::loadFromFile(ram_ptr, "testROMs/testLD_DE.gb");
+	while (!c.isHalted())
+	{
+		Clock::tick(c);
+	}
+	c.registers.printAsHex();
+	printf("Halted: %s\n", c.isHalted() ? "TRUE" : "FALSE");
+	//Cartridge::loadFromFile(ram_ptr, "testROMs/testCartridgeLoad.gb");
 	ram_ptr->dumpMemoryToFile();
 	return 0;
 }

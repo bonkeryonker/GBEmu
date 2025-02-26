@@ -49,8 +49,8 @@ private:
 	void f_NOP();
 
 	// Load data into destination register (reference)
-	void f_LD(u16& destReg, u16 data);
-	void f_LD(u8& destReg, u8 data);
+	void f_LD(u16& destReg, const u16 data);
+	void f_LD(u8& destReg, const u8 data);
 
 	// Load data from dataReg to ram address saved in ramAddrReg
 	void f_LD_ptr(u16& ramAddrReg, u8& dataReg);
@@ -87,9 +87,21 @@ private:
 	// Flags: 0, 0, 0, A0
 	void f_RRCA();
 
+	// Rotate contents of A to the left, A0 being set to the CY flag value. A7 overwrites CY flag value.
+	// Flags: 0, 0, 0, A7
+	void f_RLA();
+
+	// Rotate contents of A to the right, A7 being set to the CY flag value. A0 overwrites CY flag value.
+	// Flags: 0, 0, 0, A0
+	void f_RRA();
+
 	// Halts the CPU oscillator and the LCD.
 	// Opcode is 0x1000, though I'm not sure if the value of nextByte matters
 	// TODO: Continue operation when any button is pushed (http://marc.rawer.de/Gameboy/Docs/GBCPUman.pdf)
 	void f_STOP(const u8 nextByte);
+
+	// Read 1 byte of immediate data, and jump that many memory addresses forward.
+	// (PC += steps)
+	void f_JR_u8(const u8 steps);
 };
 #endif

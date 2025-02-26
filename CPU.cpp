@@ -62,6 +62,51 @@ unsigned short CPU::tick()
 	case STOP:
 		this->f_STOP(this->getU8Immediate());
 		break;
+	case LD_DE_u16:
+		this->f_LD(this->registers.de, this->getU16Immediate());
+		break;
+	case LD_ptrDE_A:
+		this->f_LD_ptr(this->registers.de, this->registers.a);
+		break;
+	case INC_DE:
+		this->f_INC_r16(this->registers.de);
+		break;
+	case INC_D:
+		this->f_INC_r8(this->registers.d);
+		break;
+	case DEC_D:
+		this->f_DEC_r8(this->registers.d);
+		break;
+	case LD_D_u8:
+		this->f_LD(this->registers.d, this->getU8Immediate());
+		break;
+	case RLA:
+		this->f_RLA();
+		break;
+	case JR_u8:
+		this->f_JR_u8(this->getU8Immediate());
+		break;
+	case ADD_HL_DE:
+		this->f_ADD_r16_r16(this->registers.hl, this->registers.de);
+		break;
+	case LD_A_ptrDE:
+		this->f_LD_r8_ptr(this->registers.a, this->registers.de);
+		break;
+	case DEC_DE:
+		this->f_DEC_r16(this->registers.de);
+		break;
+	case INC_E:
+		this->f_INC_r8(this->registers.e);
+		break;
+	case DEC_E:
+		this->f_DEC_r8(this->registers.e);
+		break;
+	case LD_E_u8:
+		this->f_LD(this->registers.e, this->getU8Immediate());
+		break;
+	case RRA:
+		//this->f_RRA();
+		break;
 	}
 
 	return currentOp.timing;
@@ -92,12 +137,12 @@ void CPU::f_NOP()
 	return;
 }
 
-void CPU::f_LD(u16& destReg, u16 data)
+void CPU::f_LD(u16& destReg, const u16 data)
 {
 	destReg = data;
 }
 
-void CPU::f_LD(u8& destReg, u8 data)
+void CPU::f_LD(u8& destReg, const u8 data)
 {
 	destReg = data;
 }
@@ -173,26 +218,52 @@ void CPU::f_DEC_r8(u8& reg)
 
 void CPU::f_RLCA()
 {
-	bool a7BitIsHigh = (this->registers.a & 0x80) == 0x80;
-	this->registers.a <<= 1;
-	this->registers.a |= (a7BitIsHigh) ? 0x01 : 0x00;
-	this->registers.setFlag(Z | N | H, false);
-	this->registers.setFlag(C, a7BitIsHigh);
+	bool a7BitIsHigh = (this->registers.a & 0x80) == 0x80; // Save the value of the A7 bit
+	this->registers.a <<= 1; // Bitshift left
+	this->registers.a |= (a7BitIsHigh) ? 0x01 : 0x00; // Wrap the preshift A7 bit around to A0
+	this->registers.setFlag(Z | N | H, false); // Unset all relevant flags
+	this->registers.setFlag(C, a7BitIsHigh); // Set the CY flag to the preshift value of A7
 }
 
 void CPU::f_RRCA()
 {
-	bool a0BitIsHigh = (this->registers.a & 0x01) == 0x01;
-	this->registers.a >>= 1;
-	this->registers.a |= (a0BitIsHigh) ? 0x80 : 0x00;
-	this->registers.setFlag(Z | N | H, false);
-	this->registers.setFlag(C, a0BitIsHigh);
+	bool a0BitIsHigh = (this->registers.a & 0x01) == 0x01; // Save the value of the A0 bit
+	this->registers.a >>= 1; // Bitshift right
+	this->registers.a |= (a0BitIsHigh) ? 0x80 : 0x00; // Wrap the preshift A0 bit around to A7
+	this->registers.setFlag(Z | N | H, false); // Unset all relevant flags
+	this->registers.setFlag(C, a0BitIsHigh); // Set the CY flag to the preshift value of A0
+}
+
+void CPU::f_RLA()
+{
+	bool a7BitIsHigh = (this->registers.a & 0x80) == 0x80; 	// Save the value of the A7 bit
+	bool carryFlagValue = (this->registers.f & C) == C; // Extract the value of the carry flag
+	this->registers.a <<= 1; // Bitshift left
+	this->registers.a |= (carryFlagValue) ? 0x01 : 0x00; // Set A0 to the value of CY
+	this->registers.setFlag(Z | N | H, false); // Unset all relevant flags
+	this->registers.setFlag(C, a7BitIsHigh); // Set the CY flag to the preshift value of A7
+}
+
+void CPU::f_RRA()
+{
+	bool a0BitIsHigh = (this->registers.a & 0x01) == 0x01; // Save the value of the A0 bit
+	bool carryFlagValue = (this->registers.f & C) == C; // Extract the value of the carry flag
+	this->registers.a >>= 1; // Bitshift right
+	this->registers.a |= (carryFlagValue) ? 0x80 : 0x00; // Set A7 to the value of CY
+	this->registers.setFlag(Z | N | H, false); // Unset all relevant flags
+	this->registers.setFlag(C, a0BitIsHigh); // Set the CY flag to the preshift value of A0
+
 }
 
 void CPU::f_STOP(const u8 nextByte)
 {
 	if (nextByte == 0)
 	{
-
+		this->m_isHalted = true;
 	}
+}
+
+void CPU::f_JR_u8(const u8 steps)
+{
+	this->registers.pc += steps;
 }
