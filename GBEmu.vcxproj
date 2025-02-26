@@ -129,6 +129,7 @@
   <ItemGroup>
     <ClCompile Include="Clock.cpp" />
     <ClCompile Include="CPU.cpp" />
+    <ClCompile Include="Instruction.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="RAM.cpp" />
   </ItemGroup>

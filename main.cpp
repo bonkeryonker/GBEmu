@@ -9,16 +9,13 @@
 void ramTestLD1(std::shared_ptr<RAM>& ram_ptr, CPU& c);
 void testIncDec(std::shared_ptr<RAM>& ram_ptr, CPU& c);
 void testRotateLeft(std::shared_ptr<RAM>& ram_ptr, CPU& c);
+void testAddR16R16(std::shared_ptr<RAM>& ram_ptr, CPU& c);
 
 int main()
 {
 	std::shared_ptr<RAM> ram_ptr = std::make_shared<RAM>();
 	CPU c(ram_ptr);
-	ram_ptr->setItem(0x00, LD_a16_SP);
-	ram_ptr->setItem(0x01, 0x00);
-	ram_ptr->setItem(0x02, 0x80);
-	c.registers.sp = 0xbeef;
-	c.tick();
+	testAddR16R16(ram_ptr, c);
 	ram_ptr->dumpMemoryToFile();
 	return 0;
 }
@@ -141,4 +138,35 @@ void testRotateLeft(std::shared_ptr<RAM>& ram_ptr, CPU& c)
 	}
 	else
 		printf("Success!\n\n");
+}
+
+void testAddR16R16(std::shared_ptr<RAM>& ram_ptr, CPU& c)
+{
+	int casesPassed = 0;
+	ram_ptr->setItem(0x00, ADD_HL_BC);
+	uint16_t hlTestCases[] = {      0x0FFF, 0x7FFF, 0x8FFF, 0x8FFF, 0xFFFF, 0x1234, 0x1FFF, 0xF000 };
+	uint16_t bcTestCases[] = {      0x0001, 0x0001, 0x1000, 0x2000, 0x0001, 0x5678, 0x0001, 0x1000 };
+	uint16_t testCaseResult[] = {   0x1000, 0x8000, 0x9FFF, 0xAFFF, 0x0000, 0x68AC, 0x2000, 0x0000 };
+	uint8_t expectedFRegister[] = { 0x20,   0x20,   0x00,   0x00,   0x30,   0x00,   0x20,   0x10 };
+
+	for (int i = 0; i < 8; i++)
+	{
+		c.registers.pc = 0;
+		c.registers.hl = hlTestCases[i];
+		c.registers.bc = bcTestCases[i];
+		c.tick();
+		if (c.registers.f == expectedFRegister[i])
+		{
+			printf("Test (%d/8): success!\n", i + 1);
+			casesPassed++;
+		}
+		else
+		{
+			printf("Test (%d/8): Failed!\n\n", i + 1);
+			printf("%04X + %04X = %04X\n", hlTestCases[i], bcTestCases[i], c.registers.hl);
+			printf("Flags: %02X\nExpected: %02X\n", c.registers.f, expectedFRegister[i]);
+			break;
+		}
+	}
+	
 }

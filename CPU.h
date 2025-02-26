@@ -44,8 +44,15 @@ private:
 	// Load data from dataReg to ram address saved in ramAddrReg
 	void f_LD_ptr(u16& ramAddrReg, u8& dataReg);
 
+	// Load data from ram address specified by 16bit register to 8bit destination register
+	void f_LD_r8_ptr(u8& destReg, u16& dataReg);
+
 	// Load the stack pointer to the specified destination in ram
 	void f_LD_u16_SP(u16 dest);
+
+	// Add two 16-bit registers together, saving the result to destReg
+	// Flags: -, 0, H, C
+	void f_ADD_r16_r16(u16& destReg, u16& srcReg);
 
 	// Increment the value in passed register (reference)
 	void f_INC_r16(u16& reg);
@@ -55,11 +62,18 @@ private:
 	void f_INC_r8(u8& reg);
 
 	// Decrement the value in passed register (reference)
+	void f_DEC_r16(u16& reg);
+
+	// Decrement the value in passed register (reference)
 	// Flags: Z, 1, H, -
 	void f_DEC_r8(u8& reg);
 
 	// Rotate contents of A to the left, wrapping A7 bit around to A0.
 	// Flags: 0, 0, 0, A7
 	void f_RLCA();
+
+	// Rotate the contents of A to the right, wrapping A0 bit around to A7.
+	// Flags: 0, 0, 0, A0
+	void f_RRCA();
 };
 #endif

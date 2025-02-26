@@ -57,6 +57,9 @@ struct REGISTERS {
 	u16 sp; // Stack Pointer
 	u16 pc; // Program Counter
 
+	// Set the flags passed in as arguments to the passed boolean value.
+	// Multiple flags may be passed by means of bitwise OR operation
+	// IE: setFlag(Z | N | H | C) sets all flags high
 	void setFlag(u8 flag, bool setTrue = true)
 	{
 		if (setTrue)
