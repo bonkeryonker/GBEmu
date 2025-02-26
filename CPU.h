@@ -38,6 +38,9 @@ private:
 	// Shared pointer to RAM object
 	std::shared_ptr<RAM> m_ram_ptr;
 
+	// Call the correct function for this specific opcode
+	void executeInstruction(Mnemonic opcode);
+
 	// Returns: u8 pointed at by PC. Increments PC
 	u8 getU8Immediate();
 

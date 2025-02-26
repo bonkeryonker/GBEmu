@@ -2,6 +2,7 @@
 
 CPU::CPU(std::shared_ptr<RAM>& ram)
 {
+	this->m_isHalted = false;
 	this->registers.setDefaultValues();
 	this->m_ram_ptr = ram;
 }
@@ -9,7 +10,13 @@ CPU::CPU(std::shared_ptr<RAM>& ram)
 unsigned short CPU::tick()
 {	
 	Instruction currentOp = Instruction::opcodeLookup[this->fetch()];
-	switch (currentOp.opcode)
+	this->executeInstruction(currentOp.opcode);
+	return currentOp.timing;
+}
+
+void CPU::executeInstruction(Mnemonic opcode)
+{
+	switch (opcode)
 	{
 	case NOP:
 		this->f_NOP();
@@ -108,8 +115,6 @@ unsigned short CPU::tick()
 		this->f_RRA();
 		break;
 	}
-
-	return currentOp.timing;
 }
 
 u8 CPU::fetch()
