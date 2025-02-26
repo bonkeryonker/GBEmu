@@ -5,6 +5,7 @@
 #include "Registers.h"
 #include "CPU.h"
 #include "RAM.h"
+#include "Cartridge.h"
 
 void ramTestLD1(std::shared_ptr<RAM>& ram_ptr, CPU& c);
 void testIncDec(std::shared_ptr<RAM>& ram_ptr, CPU& c);
@@ -15,7 +16,7 @@ int main()
 {
 	std::shared_ptr<RAM> ram_ptr = std::make_shared<RAM>();
 	CPU c(ram_ptr);
-	testAddR16R16(ram_ptr, c);
+	Cartridge::loadFromFile(ram_ptr, "testROMs/testCartridgeLoad.gb");
 	ram_ptr->dumpMemoryToFile();
 	return 0;
 }

@@ -23,6 +23,7 @@ enum Mnemonic
 	DEC_C, // Decrement C register.
 	LD_C_u8, // Load one byte of immediate data into C
 	RRCA, // Bitshift right, bit A0 wrapping around to A7.
+	STOP, // Stop cpu, stop LCD controller.(TODO: Until button pushed? See CPU manual: http://marc.rawer.de/Gameboy/Docs/GBCPUman.pdf)
 };
 
 class Instruction

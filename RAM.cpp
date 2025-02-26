@@ -9,7 +9,7 @@ RAM::RAM()
 RAM::~RAM()
 {
 #ifdef _DEBUG
-	printf("Ram buffer deleted!\n");
+	printf("Ram buffer deleted.\n");
 #endif
 	delete[] this->ramBuf;
 }
@@ -70,5 +70,8 @@ bool RAM::dumpMemoryToFile(const std::string& filename)
 	}
 	outFile.write(reinterpret_cast<const char*>(this->ramBuf), RAM_SIZE + 1);
 	outFile.close();
+#ifdef _DEBUG
+	printf("RAM contents dumped to %s\n", filename.c_str());
+#endif
 	return true;
 }

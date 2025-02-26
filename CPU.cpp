@@ -3,7 +3,7 @@
 CPU::CPU(std::shared_ptr<RAM>& ram)
 {
 	this->registers.setDefaultValues();
-	this->ram_ptr = ram;
+	this->m_ram_ptr = ram;
 }
 
 unsigned short CPU::tick()
@@ -57,7 +57,10 @@ unsigned short CPU::tick()
 		this->f_LD(this->registers.c, this->getU8Immediate());
 		break;
 	case RRCA:
-		//f_RRCA
+		this->f_RRCA();
+		break;
+	case STOP:
+		this->f_STOP(this->getU8Immediate());
 		break;
 	}
 
@@ -71,7 +74,7 @@ u8 CPU::fetch()
 
 u8 CPU::getU8Immediate()
 {
-	u8 retVal = this->ram_ptr->getItem(this->registers.pc);
+	u8 retVal = this->m_ram_ptr->getItem(this->registers.pc);
 	this->registers.pc++;
 	return retVal;
 }
@@ -101,20 +104,20 @@ void CPU::f_LD(u8& destReg, u8 data)
 
 void CPU::f_LD_ptr(u16& ramAddrReg, u8& dataReg)
 {
-	this->ram_ptr->setItem(ramAddrReg, dataReg);
+	this->m_ram_ptr->setItem(ramAddrReg, dataReg);
 }
 
 void CPU::f_LD_r8_ptr(u8& destReg, u16& dataReg)
 {
-	destReg = this->ram_ptr->getItem(dataReg);
+	destReg = this->m_ram_ptr->getItem(dataReg);
 }
 
 void CPU::f_LD_u16_SP(u16 dest)
 {
 	u8 sp_lo = (this->registers.sp >> 8);
 	u8 sp_hi = (this->registers.sp & 0xff);
-	this->ram_ptr->setItem(dest, sp_lo);
-	this->ram_ptr->setItem(dest + 1, sp_hi);
+	this->m_ram_ptr->setItem(dest, sp_lo);
+	this->m_ram_ptr->setItem(dest + 1, sp_hi);
 }
 
 void CPU::f_ADD_r16_r16(u16& destReg, u16& srcReg)
@@ -184,4 +187,12 @@ void CPU::f_RRCA()
 	this->registers.a |= (a0BitIsHigh) ? 0x80 : 0x00;
 	this->registers.setFlag(Z | N | H, false);
 	this->registers.setFlag(C, a0BitIsHigh);
+}
+
+void CPU::f_STOP(const u8 nextByte)
+{
+	if (nextByte == 0)
+	{
+
+	}
 }

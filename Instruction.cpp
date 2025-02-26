@@ -20,4 +20,5 @@ const Instruction Instruction::opcodeLookup[] =
 	Instruction(DEC_C, 1, 4),
 	Instruction(LD_C_u8, 2, 8),
 	Instruction(RRCA, 1, 4),
+	Instruction(STOP, 2, 4),
 };

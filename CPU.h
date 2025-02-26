@@ -20,12 +20,23 @@ public:
 	// Returns: tCycleCount of executed operation (currentInstruction.timing)
 	unsigned short tick();
 
+	// Getter for current CPU control status.
+	// Returns: Value of m_isHalted
+	inline const bool isHalted() {
+		return this->m_isHalted;
+	};
+
 	// Fetch the opcode at PC, identical to getU8Immediate(registers.pc) 
 	u8 fetch();
 
 private:
+
+	// Current status of CPU.
+	// Set to true if STOP operation is executed.
+	bool m_isHalted;
+
 	// Shared pointer to RAM object
-	std::shared_ptr<RAM> ram_ptr;
+	std::shared_ptr<RAM> m_ram_ptr;
 
 	// Returns: u8 pointed at by PC. Increments PC
 	u8 getU8Immediate();
@@ -75,5 +86,10 @@ private:
 	// Rotate the contents of A to the right, wrapping A0 bit around to A7.
 	// Flags: 0, 0, 0, A0
 	void f_RRCA();
+
+	// Halts the CPU oscillator and the LCD.
+	// Opcode is 0x1000, though I'm not sure if the value of nextByte matters
+	// TODO: Continue operation when any button is pushed (http://marc.rawer.de/Gameboy/Docs/GBCPUman.pdf)
+	void f_STOP(const u8 nextByte);
 };
 #endif

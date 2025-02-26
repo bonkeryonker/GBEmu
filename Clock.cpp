@@ -2,6 +2,9 @@
 
 void Clock::tick(CPU& cpuRef)
 {
+	if (cpuRef.isHalted())
+		return;
+
 	// Start clock
 	auto startTime = std::chrono::high_resolution_clock::now();
 
