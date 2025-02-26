@@ -105,7 +105,7 @@ unsigned short CPU::tick()
 		this->f_LD(this->registers.e, this->getU8Immediate());
 		break;
 	case RRA:
-		//this->f_RRA();
+		this->f_RRA();
 		break;
 	}
 
