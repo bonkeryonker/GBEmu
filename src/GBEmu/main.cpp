@@ -16,7 +16,11 @@ int main()
 {
 	std::shared_ptr<RAM> ram_ptr = std::make_shared<RAM>();
 	CPU c(ram_ptr);
-	Cartridge::loadFromFile(ram_ptr, "testROMs/testLD_DE.gb");
+	if (!Cartridge::loadFromFile(ram_ptr, "testROMs/testLD_DE.gb"))
+	{
+		return 1;
+	}
+
 	while (!c.isHalted())
 	{
 		Clock::tick(c);
