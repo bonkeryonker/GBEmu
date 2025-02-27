@@ -1,7 +1,7 @@
 #ifndef RAM_H
 #define RAM_H
 #include <cstdint>
-#include <cstring>
+#include <cstring> // For memset() with Ubuntu c++ compiler
 #include <stdio.h>
 #include <fstream>
 #include <memory>
