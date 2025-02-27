@@ -1,6 +1,7 @@
 #ifndef RAM_H
 #define RAM_H
 #include <cstdint>
+#include <cstring>
 #include <stdio.h>
 #include <fstream>
 #include <memory>
