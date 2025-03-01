@@ -16,6 +16,7 @@ unsigned short CPU::tick()
 
 void CPU::executeInstruction(Mnemonic opcode)
 {
+	//printf("OP@%04X: %02X\n", this->registers.pc, opcode);
 	switch (opcode)
 	{
 	case NOP:
@@ -113,6 +114,35 @@ void CPU::executeInstruction(Mnemonic opcode)
 		break;
 	case RRA:
 		this->f_RRA();
+		break;
+	case JR_NZ:
+		this->f_JR_NZ(this->getU8Immediate());
+		break;
+	case LD_HL_u16:
+		this->f_LD(this->registers.hl, this->getU16Immediate());
+		break;
+	case LD_ptrHLinc_A:
+		this->f_LD_ptr(this->registers.hl, this->registers.a);
+		this->f_INC_r16(this->registers.hl);
+		break;
+	case INC_HL:
+		this->f_INC_r16(this->registers.hl);
+		break;
+	case INC_H:
+		this->f_INC_r8(this->registers.h);
+		break;
+	case DEC_H:
+		this->f_DEC_r8(this->registers.h);
+		break;
+	case LD_H_u8:
+		this->f_LD(this->registers.h, this->getU8Immediate());
+		break;
+	case DAA:
+		//this->f_DAA();
+		break;
+	default:
+		printf("Unknown opcode: %02X. Stopping.\n", opcode);
+		this->m_isHalted = true;
 		break;
 	}
 }
@@ -268,7 +298,22 @@ void CPU::f_STOP(const u8 nextByte)
 	}
 }
 
-void CPU::f_JR_u8(const u8 steps)
+void CPU::f_JR_u8(u8 steps)
 {
+	// The getU8Immediate() command used to fetch the steps variable increments PC by 1
+	// so we'll have to decrement it before we actually jump that amount. I'm not sure if
+	// this is how it works in hardware, so we may need to delete this line if it doesn't
+	// work with actual ROMs.
+	steps--;
 	this->registers.pc += steps;
+#ifdef _DEBUG
+	printf("Jumped to %04X\n", this->registers.pc);
+#endif
+}
+
+void CPU::f_JR_NZ(u8 steps)
+{
+	if (!this->registers.isFlagSet(Z))
+		this->f_JR_u8(steps);
+	//else do nothing. PC will be incremented upon next fetch()
 }

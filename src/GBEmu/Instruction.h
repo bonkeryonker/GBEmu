@@ -32,14 +32,22 @@ enum Mnemonic
 	LD_D_u8, // Load one byte of immediate data into D
 	RLA, // Bitshift left, A0 gaining the value of whatever's in the carry flag. A7 saved to CY flag.
 	JR_u8, // Read one byte of immediate data, add its value to the PC (Jump n steps forward).
-	ADD_HL_DE, // Add the values of the HL and DE registers together and store the result into the HL register
-	
+	ADD_HL_DE, // Add the values of the HL and DE registers together and store the result into the HL register	
 	LD_A_ptrDE, // Load the 8bit contents of memory specified by DE into register A
 	DEC_DE, // Decrement DE register.
 	INC_E, // Increment E register.
 	DEC_E, // Decremennt E register.
 	LD_E_u8, // Load one byte of immediate data into E
 	RRA, // Bitshift right, A7 gaining the value of whatever's in the carry flag. A0 saved to CY flag.
+
+	JR_NZ, // Read one byte of immediate data, add its value to the PC if the Z flag is 0
+	LD_HL_u16, // Load two bytes of immediate data into HL
+	LD_ptrHLinc_A, // Store contents of A into memory address specified by HL and increment contents of HL
+	INC_HL, // Increment HL register.
+	INC_H, // Increment H register.
+	DEC_H, // Decrement H register.
+	LD_H_u8, // Load one byte of immediate data into H
+	DAA, // Adjust A to a BCD number after BCD addition/subtraction operations
 };
 
 class Instruction

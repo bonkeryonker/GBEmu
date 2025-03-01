@@ -34,4 +34,13 @@ const Instruction Instruction::opcodeLookup[] =
 	Instruction(DEC_E, 1, 4),
 	Instruction(LD_E_u8, 2, 8),
 	Instruction(RRA, 1, 4),
+
+	Instruction(JR_NZ, 2, 12), //Worst case scenario for timing (12 ticks if it must make the jump. 8 ticks if not). We'll have to manually override the timing if jump is made (f_JR_NZ returns bool?)
+	Instruction(LD_HL_u16, 3, 12),
+	Instruction(LD_ptrHLinc_A, 1, 8),
+	Instruction(INC_HL, 1, 8),
+	Instruction(INC_H, 1, 4),
+	Instruction(DEC_H, 1, 4),
+	Instruction(LD_H_u8, 2, 8),
+	Instruction(DAA, 1, 4),
 };

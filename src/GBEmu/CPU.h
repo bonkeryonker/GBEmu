@@ -106,6 +106,10 @@ private:
 
 	// Read 1 byte of immediate data, and jump that many memory addresses forward.
 	// (PC += steps)
-	void f_JR_u8(const u8 steps);
+	void f_JR_u8(u8 steps);
+
+	// Read 1 byte of immediate data, and jump that many memory addresses forward if the Z flag is NOT set.
+	// (PC += steps)
+	void f_JR_NZ(u8 steps);
 };
 #endif

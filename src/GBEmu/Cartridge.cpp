@@ -22,3 +22,22 @@ bool Cartridge::loadFromFile(std::shared_ptr<RAM>& ram_ptr, const std::string& f
 #endif
 		romFile.close();
 }
+
+u8 Cartridge::calculateChecksum(std::shared_ptr<RAM>& ram_ptr)
+{
+	u8 checksum = 0;
+	for (u16 addr = 0x0134; addr <= 0x014C; addr++)
+		checksum = checksum - ram_ptr->getItem(addr) - 1;
+
+	return checksum;
+}
+
+void Cartridge::overrideChecksum(std::shared_ptr<RAM>& ram_ptr)
+{
+	ram_ptr->setItem(CHECKSUM_ADDRESS, Cartridge::calculateChecksum(ram_ptr));
+}
+
+bool Cartridge::validateChecksum(std::shared_ptr<RAM>& ram_ptr)
+{
+	return ram_ptr->getItem(CHECKSUM_ADDRESS) == Cartridge::calculateChecksum(ram_ptr);
+}
