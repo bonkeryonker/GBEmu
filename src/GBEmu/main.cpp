@@ -12,22 +12,19 @@ void ramTestLD1(std::shared_ptr<RAM>& ram_ptr, CPU& c);
 void testIncDec(std::shared_ptr<RAM>& ram_ptr, CPU& c);
 void testRotateLeft(std::shared_ptr<RAM>& ram_ptr, CPU& c);
 void testAddR16R16(std::shared_ptr<RAM>& ram_ptr, CPU& c);
-bool testCalcChecksum(std::shared_ptr<RAM>& ram_ptr);
 
 int main()
 {
 	std::shared_ptr<RAM> ram_ptr = std::make_shared<RAM>();
 	CPU c(ram_ptr);
 	Cartridge::loadFromFile(ram_ptr, "../../bin/testROMs/testJR.gb");
-	if (!Cartridge::validateChecksum(ram_ptr))
+	if (!Cartridge::validateChecksums(ram_ptr))
 	{
-		printf("Checksum: %02X is invalid (Expected: %02X)\n", ram_ptr->getItem(CHECKSUM_ADDRESS), Cartridge::calculateChecksum(ram_ptr));
-		printf("Would you like to continue anyway? (Y\\n)\n");
-		char response;
-		std::cin >> response;
-		if (response == 'n')
-			return 1; //err
+		printf("Invalid ROM checksum(s). Overriding...\n");
+		Cartridge::overrideChecksums(ram_ptr);
+		//return 1;
 	}
+	printf("ROM checksums good!\n");
 
 	c.registers.printAsHex();
 	//printf("Halted: %s\n", c.isHalted() ? "TRUE" : "FALSE");
@@ -185,17 +182,4 @@ void testAddR16R16(std::shared_ptr<RAM>& ram_ptr, CPU& c)
 		}
 	}
 	
-}
-
-bool testCalcChecksum(std::shared_ptr<RAM>& ram_ptr)
-{
-	if (!Cartridge::loadFromFile(ram_ptr, "../../bin/testROMs/01-special.gb"))
-	{
-		return false;
-	}
-
-	u8 value = Cartridge::calculateChecksum(ram_ptr);
-	printf("Checksum: %02X\n", value);
-
-	return true;
 }

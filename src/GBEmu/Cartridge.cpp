@@ -23,7 +23,12 @@ bool Cartridge::loadFromFile(std::shared_ptr<RAM>& ram_ptr, const std::string& f
 		romFile.close();
 }
 
-u8 Cartridge::calculateChecksum(std::shared_ptr<RAM>& ram_ptr)
+bool Cartridge::validateChecksums(std::shared_ptr<RAM>& ram_ptr)
+{
+	return Cartridge::validateHeaderChecksum(ram_ptr) && Cartridge::validateGlobalChecksum(ram_ptr);
+}
+
+u8 Cartridge::calculateHeaderChecksum(std::shared_ptr<RAM>& ram_ptr)
 {
 	u8 checksum = 0;
 	for (u16 addr = 0x0134; addr <= 0x014C; addr++)
@@ -32,12 +37,36 @@ u8 Cartridge::calculateChecksum(std::shared_ptr<RAM>& ram_ptr)
 	return checksum;
 }
 
-void Cartridge::overrideChecksum(std::shared_ptr<RAM>& ram_ptr)
+u16 Cartridge::calculateGlobalChecksum(std::shared_ptr<RAM>& ram_ptr)
 {
-	ram_ptr->setItem(CHECKSUM_ADDRESS, Cartridge::calculateChecksum(ram_ptr));
+	u16 checksum = 0;
+	for (u16 addr = 0; addr <= MAX_CARTSIZE; addr++)
+	{
+		// Don't add the two checksum bytes to the checksum
+		if (!(addr == 0x014E || addr == 0x014F))
+		{
+			checksum += ram_ptr->getItem(addr);
+		}
+	}
+	return checksum;
 }
 
-bool Cartridge::validateChecksum(std::shared_ptr<RAM>& ram_ptr)
+void Cartridge::overrideChecksums(std::shared_ptr<RAM>& ram_ptr)
 {
-	return ram_ptr->getItem(CHECKSUM_ADDRESS) == Cartridge::calculateChecksum(ram_ptr);
+	u16 globalChecksum = Cartridge::calculateGlobalChecksum(ram_ptr);
+	ram_ptr->setItem(HEADER_CHECKSUM_ADDRESS, Cartridge::calculateHeaderChecksum(ram_ptr));
+	ram_ptr->setItem(GLOBAL_CHECKSUM_ADDRESS, (globalChecksum & 0xff00) >> 8);
+	ram_ptr->setItem(GLOBAL_CHECKSUM_ADDRESS + 1, globalChecksum & 0x00ff);
+}
+
+bool Cartridge::validateHeaderChecksum(std::shared_ptr<RAM>& ram_ptr)
+{
+	return ram_ptr->getItem(HEADER_CHECKSUM_ADDRESS) == Cartridge::calculateHeaderChecksum(ram_ptr);
+}
+
+bool Cartridge::validateGlobalChecksum(std::shared_ptr<RAM>& ram_ptr)
+{
+	u16 checksum = (ram_ptr->getItem(GLOBAL_CHECKSUM_ADDRESS) << 8);
+	checksum |= ram_ptr->getItem(GLOBAL_CHECKSUM_ADDRESS + 1);
+	return checksum == Cartridge::calculateGlobalChecksum(ram_ptr);
 }
