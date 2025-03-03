@@ -116,7 +116,7 @@ void CPU::executeInstruction(Mnemonic opcode)
 		this->f_RRA();
 		break;
 	case JR_NZ:
-		this->f_JR_NZ(this->getU8Immediate());
+		this->f_JR_flag(this->getU8Immediate(), Z, false);
 		break;
 	case LD_HL_u16:
 		this->f_LD(this->registers.hl, this->getU16Immediate());
@@ -138,7 +138,32 @@ void CPU::executeInstruction(Mnemonic opcode)
 		this->f_LD(this->registers.h, this->getU8Immediate());
 		break;
 	case DAA:
-		//this->f_DAA();
+		this->f_DAA();
+		break;
+	case JR_Z:
+		this->f_JR_flag(this->getU8Immediate(), Z);
+		break;
+	case ADD_HL_HL:
+		this->f_ADD_r16_r16(this->registers.hl, this->registers.hl);
+		break;
+	case LD_A_ptrHLinc:
+		this->f_LD_r8_ptr(this->registers.a, this->registers.hl);
+		this->f_INC_r16(this->registers.hl);
+		break;
+	case DEC_HL:
+		this->f_DEC_r16(this->registers.hl);
+		break;
+	case INC_L:
+		this->f_INC_r8(this->registers.l);
+		break;
+	case DEC_L:
+		this->f_DEC_r8(this->registers.l);
+		break;
+	case LD_L_u8:
+		this->f_LD(this->registers.l, this->getU8Immediate());
+		break;
+	case CPL:
+		this->f_CPL();
 		break;
 	default:
 		printf("Unknown opcode: %02X. Stopping.\n", opcode);
@@ -311,9 +336,42 @@ void CPU::f_JR_u8(u8 steps)
 #endif
 }
 
-void CPU::f_JR_NZ(u8 steps)
+void CPU::f_JR_flag(u8 steps, u8 FLAG, bool jumpIfFlag)
 {
-	if (!this->registers.isFlagSet(Z))
+	if ((jumpIfFlag == this->registers.isFlagSet(FLAG)))
 		this->f_JR_u8(steps);
 	//else do nothing. PC will be incremented upon next fetch()
+}
+
+void CPU::f_DAA()
+{
+	if (!this->registers.isFlagSet(N)) // An addition occurred
+	{
+		if (this->registers.isFlagSet(C) || this->registers.a > 0x99) // If a carry occurred, or if a is greater than 0x99 (not BCD)
+		{
+			this->registers.a += 0x60;
+			this->registers.setFlag(C);
+		}
+		if (this->registers.isFlagSet(H) || (this->registers.a & 0x0f) > 0x09) // If a halfcarry occurred, or if lower nibble is greater than 0x09
+		{
+			this->registers.a += 0x06;
+		}
+	}
+	else // A subtraction occurred
+	{
+		if (this->registers.isFlagSet(C))
+			this->registers.a -= 0x60;
+		if (this->registers.isFlagSet(H))
+			this->registers.a -= 0x06;
+	}
+
+	// Always update these flags with DAA
+	this->registers.setFlag(H, false);
+	this->registers.setFlag(Z, this->registers.a == 0x00);
+}
+
+void CPU::f_CPL()
+{
+	this->registers.a = ~(this->registers.a);
+	this->registers.setFlag(N | H);
 }

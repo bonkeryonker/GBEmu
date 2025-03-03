@@ -39,7 +39,6 @@ enum Mnemonic
 	DEC_E, // Decremennt E register.
 	LD_E_u8, // Load one byte of immediate data into E
 	RRA, // Bitshift right, A7 gaining the value of whatever's in the carry flag. A0 saved to CY flag.
-
 	JR_NZ, // Read one byte of immediate data, add its value to the PC if the Z flag is 0
 	LD_HL_u16, // Load two bytes of immediate data into HL
 	LD_ptrHLinc_A, // Store contents of A into memory address specified by HL and increment contents of HL
@@ -48,6 +47,14 @@ enum Mnemonic
 	DEC_H, // Decrement H register.
 	LD_H_u8, // Load one byte of immediate data into H
 	DAA, // Adjust A to a BCD number after BCD addition/subtraction operations
+	JR_Z, // Read one byte of immediate data, add its value to the PC if the Z flag is 1
+	ADD_HL_HL, // Add contents of HL to the contents of HL. Store result in HL
+	LD_A_ptrHLinc, // Load contents of memory specified by HL into A and increment contents of HL
+	DEC_HL, // Decrement HL register.
+	INC_L, // Increment L register.
+	DEC_L, // Decrement L register.
+	LD_L_u8, // Load one byte of immediate data into L
+	CPL, // Take the 1's Complement (flip all bits) of the contents of register A
 };
 
 class Instruction

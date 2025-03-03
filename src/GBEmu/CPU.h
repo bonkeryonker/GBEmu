@@ -105,11 +105,20 @@ private:
 	void f_STOP(const u8 nextByte);
 
 	// Read 1 byte of immediate data, and jump that many memory addresses forward.
+	// TODO: Verify functionality on actual hardware. (See function definition for more details)
 	// (PC += steps)
 	void f_JR_u8(u8 steps);
 
-	// Read 1 byte of immediate data, and jump that many memory addresses forward if the Z flag is NOT set.
+	// Read 1 byte of immediate data, and jump that many memory addresses forward if the flag matches jumpIfFlag boolean
 	// (PC += steps)
-	void f_JR_NZ(u8 steps);
+	void f_JR_flag(u8 steps, u8 FLAG, bool jumpIfFlag = true);
+
+	// Adjust the accumulator (A) to a BCD number after BCD addition/subtraction operations
+	// Flags: Z, -, 0, C
+	void f_DAA();
+
+	// Get the 1's complement (flip all bits) of register A
+	// Flags: -, 1, 1, - (Set N, set H)
+	void f_CPL();
 };
 #endif

@@ -17,7 +17,9 @@ int main()
 {
 	std::shared_ptr<RAM> ram_ptr = std::make_shared<RAM>();
 	CPU c(ram_ptr);
-	Cartridge::loadFromFile(ram_ptr, "../../bin/testROMs/testJR.gb");
+
+	// Load ROM
+	Cartridge::loadFromFile(ram_ptr, "../../bin/testROMs/testCPL.gb");
 	if (!Cartridge::validateChecksums(ram_ptr))
 	{
 		printf("Invalid ROM checksum(s). Overriding...\n");
@@ -26,9 +28,15 @@ int main()
 	}
 	printf("ROM checksums good!\n");
 
+	// Begin ROM execution
+	while (!c.isHalted())
+	{
+		Clock::tick(c);
+	}
+
+	// Finish up
 	c.registers.printAsHex();
-	//printf("Halted: %s\n", c.isHalted() ? "TRUE" : "FALSE");
-	//Cartridge::loadFromFile(ram_ptr, "testROMs/testCartridgeLoad.gb");
+	printf("Halted: %s\n", c.isHalted() ? "TRUE" : "FALSE");
 	ram_ptr->dumpMemoryToFile();
 	return 0;
 }
