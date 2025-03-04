@@ -1,8 +1,5 @@
 #ifndef INSTRUCT_H
 #define INSTRUCT_H
-#include <string>
-#include <functional>
-#include <vector>
 #include "Globals.h"
 
 enum Mnemonic
@@ -55,6 +52,56 @@ enum Mnemonic
 	DEC_L, // Decrement L register.
 	LD_L_u8, // Load one byte of immediate data into L
 	CPL, // Take the 1's Complement (flip all bits) of the contents of register A
+	JR_NC, // Read one byte of immediate data, add its value to PC if the C flag is 0
+	LD_SP_u16, // Load two bytes of immediate data into SP
+	LD_ptrHLdec_A, // Store contents of A into memory address specified by HL and decrement contents of HL
+	INC_SP, // Increment SP register.
+	INC_ptrHL, // Increment the value at memory address specified by contents of HL
+	DEC_ptrHL, // Decrement the value at memory address specified by contents of HL
+	LD_ptrHL_u8, // Read one byte of immediate data, and save its value to the memory address specified by HL
+	SCF, // Set the carry flag
+	JR_C, // Read one byte of immediate data, add its value to the PC if the C flag is 1
+	ADD_HL_SP, // Add contents of SP to contents of HL, and store result in HL
+	LD_A_ptrHLdec, // Load the values in memory specified by contents of HL into register A, and decrement HL
+	DEC_SP, // Decrement SP register.
+	INC_A, // Increment A register.
+	DEC_A, // Decrement A register.
+	LD_A_u8, // Load one byte of immediate data into A
+	CCF, // Flip the carry flag
+
+	LD_B_B, // Opcode 0x40
+	LD_B_C,
+	LD_B_D,
+	LD_B_E,
+	LD_B_H,
+	LD_B_L,
+	LD_B_ptrHL, // Load the contents of memory specified by the contents of HL into B register
+	LD_B_A,
+	LD_C_B,
+	LD_C_C,
+	LD_C_D,
+	LD_C_E,
+	LD_C_H,
+	LD_C_L,
+	LD_C_ptrHL, // Load the contents of memory specified by the contents of HL into C register
+	LD_C_A,
+
+	LD_D_B, // Opcode 0x50
+	LD_D_C,
+	LD_D_D,
+	LD_D_E,
+	LD_D_H,
+	LD_D_L,
+	LD_D_ptrHL,
+	LD_D_A,
+	LD_E_B,
+	LD_E_C,
+	LD_E_D,
+	LD_E_E,
+	LD_E_H,
+	LD_E_L,
+	LD_E_ptrHL,
+	LD_E_A,
 };
 
 class Instruction

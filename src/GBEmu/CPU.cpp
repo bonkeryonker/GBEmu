@@ -165,9 +165,152 @@ void CPU::executeInstruction(Mnemonic opcode)
 	case CPL:
 		this->f_CPL();
 		break;
-	default:
-		printf("Unknown opcode: %02X. Stopping.\n", opcode);
-		this->m_isHalted = true;
+	case JR_NC:
+		this->f_JR_flag(this->getU8Immediate(), C, false);
+		break;
+	case LD_SP_u16:
+		this->f_LD(this->registers.sp, this->getU16Immediate());
+		break;
+	case LD_ptrHLdec_A:
+		this->f_LD_ptr(this->registers.hl, this->registers.a);
+		this->f_DEC_r16(this->registers.hl);
+		break;
+	case INC_SP:
+		this->f_INC_r16(this->registers.sp);
+		break;
+	case INC_ptrHL:
+		//this->f_INC_ptr(this->registers.hl);
+		break;
+	case DEC_ptrHL:
+		//this->f_DEC_ptr(this->registers.hl);
+		break;
+	case LD_ptrHL_u8:
+		// todo
+		break;
+	case SCF:
+		this->registers.setFlag(C);
+		this->registers.setFlag(N | H, false);
+		break;
+	case JR_C:
+		this->f_JR_flag(this->getU8Immediate(), C);
+		break;
+	case ADD_HL_SP:
+		this->f_ADD_r16_r16(this->registers.hl, this->registers.sp);
+		break;
+	case LD_A_ptrHLdec:
+		this->f_LD_r8_ptr(this->registers.a, this->registers.hl);
+		this->f_DEC_r16(this->registers.hl);
+		break;
+	case DEC_SP:
+		this->f_DEC_r16(this->registers.sp);
+		break;
+	case INC_A:
+		this->f_INC_r8(this->registers.a);
+		break;
+	case DEC_A:
+		this->f_DEC_r8(this->registers.a);
+		break;
+	case LD_A_u8:
+		this->f_LD(this->registers.a, this->getU8Immediate());
+		break;
+	case CCF:
+		this->registers.setFlag(C, !this->registers.isFlagSet(C));
+		break;
+	case LD_B_B:
+		this->f_LD(this->registers.b, this->registers.b);
+		break;
+	case LD_B_C:
+		this->f_LD(this->registers.b, this->registers.c);
+		break;
+	case LD_B_D:
+		this->f_LD(this->registers.b, this->registers.d);
+		break;
+	case LD_B_E:
+		this->f_LD(this->registers.b, this->registers.e);
+		break;
+	case LD_B_H:
+		this->f_LD(this->registers.b, this->registers.h);
+		break;
+	case LD_B_L:
+		this->f_LD(this->registers.b, this->registers.l);
+		break;
+	case LD_B_ptrHL:
+		this->f_LD_r8_ptr(this->registers.b, this->registers.hl);
+		break;
+	case LD_B_A:
+		this->f_LD(this->registers.b, this->registers.a);
+		break;
+	case LD_C_B:
+		this->f_LD(this->registers.c, this->registers.b);
+		break;
+	case LD_C_C:
+		this->f_LD(this->registers.c, this->registers.c);
+		break;
+	case LD_C_D:
+		this->f_LD(this->registers.c, this->registers.d);
+		break;
+	case LD_C_E:
+		this->f_LD(this->registers.c, this->registers.e);
+		break;
+	case LD_C_H:
+		this->f_LD(this->registers.c, this->registers.h);
+		break;
+	case LD_C_L:
+		this->f_LD(this->registers.c, this->registers.l);
+		break;
+	case LD_C_ptrHL:
+		this->f_LD_r8_ptr(this->registers.c, this->registers.hl);
+		break;
+	case LD_C_A:
+		this->f_LD(this->registers.c, this->registers.a);
+		break;
+	case LD_D_B:
+		this->f_LD(this->registers.d, this->registers.b);
+		break;
+	case LD_D_C:
+		this->f_LD(this->registers.d, this->registers.c);
+		break;
+	case LD_D_D:
+		this->f_LD(this->registers.d, this->registers.d);
+		break;
+	case LD_D_E:
+		this->f_LD(this->registers.d, this->registers.e);
+		break;
+	case LD_D_H:
+		this->f_LD(this->registers.d, this->registers.h);
+		break;
+	case LD_D_L:
+		this->f_LD(this->registers.d, this->registers.l);
+		break;
+	case LD_D_ptrHL:
+		this->f_LD_r8_ptr(this->registers.d, this->registers.hl);
+		break;
+	case LD_D_A:
+		this->f_LD(this->registers.d, this->registers.a);
+		break;
+	case LD_E_B:
+		this->f_LD(this->registers.e, this->registers.b);
+		break;
+	case LD_E_C:
+		this->f_LD(this->registers.e, this->registers.c);
+		break;
+	case LD_E_D:
+		this->f_LD(this->registers.e, this->registers.d);
+		break;
+	case LD_E_E:
+		this->f_LD(this->registers.e, this->registers.e);
+		break;
+	case LD_E_H:
+		this->f_LD(this->registers.e, this->registers.h);
+		break;
+	case LD_E_L:
+		this->f_LD(this->registers.e, this->registers.l);
+		break;
+	case LD_E_ptrHL:
+		this->f_LD_r8_ptr(this->registers.e, this->registers.hl);
+		break;
+	case LD_E_A:
+		this->f_LD(this->registers.e, this->registers.a);
 		break;
 	}
 }
