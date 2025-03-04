@@ -1,14 +1,14 @@
 #ifndef RAM_H
 #define RAM_H
 #include <cstdint>
+#include <cstring> // For memset() with Ubuntu c++ compiler
 #include <stdio.h>
 #include <fstream>
 #include <memory>
+#include "Cartridge.h"
 #include "Globals.h"
 
-#define RAM_SIZE 0xFFFF
-
-/*
+	/*
 	* Enum containing common memory offsets.
 	*/
 enum MemoryMap
@@ -48,28 +48,27 @@ enum MemoryMap
 	IE = 0xFFFF
 };
 
-class RAM
+class Memory
 {
 public:
+	static inline bool isRomAddress(u16 address) { return address < VRAM; }
 
 	// Allocates RAM_SIZE bytes on the heap, and sets them all to 0x00
-	RAM();
+	Memory(std::shared_ptr<Cartridge>& cart_ptr);
 
 	// Delete[]'s the ram buffer
-	~RAM();
+	~Memory();
 
 	// Returns the byte at the specified address in memory
 	u8 getItem(u16 address);
 
 	// Sets the byte at the specified address in memory to the passed value.
-	void setItem(u16 address, u8 value);
-
-	// Writes an ascii string starting at the specified address in memory
-	// Returns: False if the length of the string would overwrite the buffer
-	bool writeStringASCII(u16 startAddress, std::string value);
+	// RETURNS: true if write was successful (Address not in cartridge ROM).
+	bool setItem(u16 address, u8 value);
 
 	// Outputs the full contents of RAM to a binary file
-	bool dumpMemoryToFile(const std::string& filename="ram_dump.bin");
+	bool dumpMemoryToFile(const std::string& filename="../../bin/memdumps/mem_dump.bin", bool dumpCartridge=true);
+	inline bool dumpMemoryToFile(bool dumpCartridge) { return this->dumpMemoryToFile("../../bin/memdumps/mem_dump.bin", dumpCartridge); }
 
 	// Uses writeStringsASCII to write ascii text at the beginning of all memory maps
 	// specified in MemoryMap.
@@ -77,6 +76,11 @@ public:
 
 private:
 	u8* ramBuf;
+	std::shared_ptr<Cartridge> cart_ptr;
+
+	// Offset the passed address to point to the correct value in ram buffer.
+	// (Ex: 0x8000 returns 0x0000)
+	u16 normalizeAddress(u16 address);
 
 };
 #endif

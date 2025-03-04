@@ -3,14 +3,15 @@
 #include <stdio.h>
 #include <memory>
 #include "Registers.h"
-#include "RAM.h"
+#include "Memory.h"
 #include "Instruction.h"
 class CPU
 {
+
 public:
 	// Sets all register values to default values
 	// Program counter set to 0
-	CPU(std::shared_ptr<RAM>& ram);
+	CPU(std::shared_ptr<Memory>& ram);
 	CPU() = delete; // will never be generated, default constructor forbidden
 
 	// Public struct holding register data
@@ -36,7 +37,7 @@ private:
 	bool m_isHalted;
 
 	// Shared pointer to RAM object
-	std::shared_ptr<RAM> m_ram_ptr;
+	std::shared_ptr<Memory> m_ram_ptr;
 
 	// Call the correct function for this specific opcode
 	void executeInstruction(Mnemonic opcode);
@@ -104,7 +105,20 @@ private:
 	void f_STOP(const u8 nextByte);
 
 	// Read 1 byte of immediate data, and jump that many memory addresses forward.
+	// TODO: Verify functionality on actual hardware. (See function definition for more details)
 	// (PC += steps)
-	void f_JR_u8(const u8 steps);
+	void f_JR_u8(u8 steps);
+
+	// Read 1 byte of immediate data, and jump that many memory addresses forward if the flag matches jumpIfFlag boolean
+	// (PC += steps)
+	void f_JR_flag(u8 steps, u8 FLAG, bool jumpIfFlag = true);
+
+	// Adjust the accumulator (A) to a BCD number after BCD addition/subtraction operations
+	// Flags: Z, -, 0, C
+	void f_DAA();
+
+	// Get the 1's complement (flip all bits) of register A
+	// Flags: -, 1, 1, - (Set N, set H)
+	void f_CPL();
 };
 #endif

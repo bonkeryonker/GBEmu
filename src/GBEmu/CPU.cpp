@@ -1,6 +1,6 @@
 #include "CPU.h"
 
-CPU::CPU(std::shared_ptr<RAM>& ram)
+CPU::CPU(std::shared_ptr<Memory>& ram)
 {
 	this->m_isHalted = false;
 	this->registers.setDefaultValues();
@@ -16,6 +16,7 @@ unsigned short CPU::tick()
 
 void CPU::executeInstruction(Mnemonic opcode)
 {
+	//printf("OP@%04X: %02X\n", this->registers.pc, opcode);
 	switch (opcode)
 	{
 	case NOP:
@@ -113,6 +114,203 @@ void CPU::executeInstruction(Mnemonic opcode)
 		break;
 	case RRA:
 		this->f_RRA();
+		break;
+	case JR_NZ:
+		this->f_JR_flag(this->getU8Immediate(), Z, false);
+		break;
+	case LD_HL_u16:
+		this->f_LD(this->registers.hl, this->getU16Immediate());
+		break;
+	case LD_ptrHLinc_A:
+		this->f_LD_ptr(this->registers.hl, this->registers.a);
+		this->f_INC_r16(this->registers.hl);
+		break;
+	case INC_HL:
+		this->f_INC_r16(this->registers.hl);
+		break;
+	case INC_H:
+		this->f_INC_r8(this->registers.h);
+		break;
+	case DEC_H:
+		this->f_DEC_r8(this->registers.h);
+		break;
+	case LD_H_u8:
+		this->f_LD(this->registers.h, this->getU8Immediate());
+		break;
+	case DAA:
+		this->f_DAA();
+		break;
+	case JR_Z:
+		this->f_JR_flag(this->getU8Immediate(), Z);
+		break;
+	case ADD_HL_HL:
+		this->f_ADD_r16_r16(this->registers.hl, this->registers.hl);
+		break;
+	case LD_A_ptrHLinc:
+		this->f_LD_r8_ptr(this->registers.a, this->registers.hl);
+		this->f_INC_r16(this->registers.hl);
+		break;
+	case DEC_HL:
+		this->f_DEC_r16(this->registers.hl);
+		break;
+	case INC_L:
+		this->f_INC_r8(this->registers.l);
+		break;
+	case DEC_L:
+		this->f_DEC_r8(this->registers.l);
+		break;
+	case LD_L_u8:
+		this->f_LD(this->registers.l, this->getU8Immediate());
+		break;
+	case CPL:
+		this->f_CPL();
+		break;
+	case JR_NC:
+		this->f_JR_flag(this->getU8Immediate(), C, false);
+		break;
+	case LD_SP_u16:
+		this->f_LD(this->registers.sp, this->getU16Immediate());
+		break;
+	case LD_ptrHLdec_A:
+		this->f_LD_ptr(this->registers.hl, this->registers.a);
+		this->f_DEC_r16(this->registers.hl);
+		break;
+	case INC_SP:
+		this->f_INC_r16(this->registers.sp);
+		break;
+	case INC_ptrHL:
+		//this->f_INC_ptr(this->registers.hl);
+		break;
+	case DEC_ptrHL:
+		//this->f_DEC_ptr(this->registers.hl);
+		break;
+	case LD_ptrHL_u8:
+		// todo
+		break;
+	case SCF:
+		this->registers.setFlag(C);
+		this->registers.setFlag(N | H, false);
+		break;
+	case JR_C:
+		this->f_JR_flag(this->getU8Immediate(), C);
+		break;
+	case ADD_HL_SP:
+		this->f_ADD_r16_r16(this->registers.hl, this->registers.sp);
+		break;
+	case LD_A_ptrHLdec:
+		this->f_LD_r8_ptr(this->registers.a, this->registers.hl);
+		this->f_DEC_r16(this->registers.hl);
+		break;
+	case DEC_SP:
+		this->f_DEC_r16(this->registers.sp);
+		break;
+	case INC_A:
+		this->f_INC_r8(this->registers.a);
+		break;
+	case DEC_A:
+		this->f_DEC_r8(this->registers.a);
+		break;
+	case LD_A_u8:
+		this->f_LD(this->registers.a, this->getU8Immediate());
+		break;
+	case CCF:
+		this->registers.setFlag(C, !this->registers.isFlagSet(C));
+		break;
+	case LD_B_B:
+		this->f_LD(this->registers.b, this->registers.b);
+		break;
+	case LD_B_C:
+		this->f_LD(this->registers.b, this->registers.c);
+		break;
+	case LD_B_D:
+		this->f_LD(this->registers.b, this->registers.d);
+		break;
+	case LD_B_E:
+		this->f_LD(this->registers.b, this->registers.e);
+		break;
+	case LD_B_H:
+		this->f_LD(this->registers.b, this->registers.h);
+		break;
+	case LD_B_L:
+		this->f_LD(this->registers.b, this->registers.l);
+		break;
+	case LD_B_ptrHL:
+		this->f_LD_r8_ptr(this->registers.b, this->registers.hl);
+		break;
+	case LD_B_A:
+		this->f_LD(this->registers.b, this->registers.a);
+		break;
+	case LD_C_B:
+		this->f_LD(this->registers.c, this->registers.b);
+		break;
+	case LD_C_C:
+		this->f_LD(this->registers.c, this->registers.c);
+		break;
+	case LD_C_D:
+		this->f_LD(this->registers.c, this->registers.d);
+		break;
+	case LD_C_E:
+		this->f_LD(this->registers.c, this->registers.e);
+		break;
+	case LD_C_H:
+		this->f_LD(this->registers.c, this->registers.h);
+		break;
+	case LD_C_L:
+		this->f_LD(this->registers.c, this->registers.l);
+		break;
+	case LD_C_ptrHL:
+		this->f_LD_r8_ptr(this->registers.c, this->registers.hl);
+		break;
+	case LD_C_A:
+		this->f_LD(this->registers.c, this->registers.a);
+		break;
+	case LD_D_B:
+		this->f_LD(this->registers.d, this->registers.b);
+		break;
+	case LD_D_C:
+		this->f_LD(this->registers.d, this->registers.c);
+		break;
+	case LD_D_D:
+		this->f_LD(this->registers.d, this->registers.d);
+		break;
+	case LD_D_E:
+		this->f_LD(this->registers.d, this->registers.e);
+		break;
+	case LD_D_H:
+		this->f_LD(this->registers.d, this->registers.h);
+		break;
+	case LD_D_L:
+		this->f_LD(this->registers.d, this->registers.l);
+		break;
+	case LD_D_ptrHL:
+		this->f_LD_r8_ptr(this->registers.d, this->registers.hl);
+		break;
+	case LD_D_A:
+		this->f_LD(this->registers.d, this->registers.a);
+		break;
+	case LD_E_B:
+		this->f_LD(this->registers.e, this->registers.b);
+		break;
+	case LD_E_C:
+		this->f_LD(this->registers.e, this->registers.c);
+		break;
+	case LD_E_D:
+		this->f_LD(this->registers.e, this->registers.d);
+		break;
+	case LD_E_E:
+		this->f_LD(this->registers.e, this->registers.e);
+		break;
+	case LD_E_H:
+		this->f_LD(this->registers.e, this->registers.h);
+		break;
+	case LD_E_L:
+		this->f_LD(this->registers.e, this->registers.l);
+		break;
+	case LD_E_ptrHL:
+		this->f_LD_r8_ptr(this->registers.e, this->registers.hl);
+		break;
+	case LD_E_A:
+		this->f_LD(this->registers.e, this->registers.a);
 		break;
 	}
 }
@@ -268,7 +466,55 @@ void CPU::f_STOP(const u8 nextByte)
 	}
 }
 
-void CPU::f_JR_u8(const u8 steps)
+void CPU::f_JR_u8(u8 steps)
 {
+	// The getU8Immediate() command used to fetch the steps variable increments PC by 1
+	// so we'll have to decrement it before we actually jump that amount. I'm not sure if
+	// this is how it works in hardware, so we may need to delete this line if it doesn't
+	// work with actual ROMs.
+	steps--;
 	this->registers.pc += steps;
+#ifdef _DEBUG
+	printf("Jumped to %04X\n", this->registers.pc);
+#endif
+}
+
+void CPU::f_JR_flag(u8 steps, u8 FLAG, bool jumpIfFlag)
+{
+	if ((jumpIfFlag == this->registers.isFlagSet(FLAG)))
+		this->f_JR_u8(steps);
+	//else do nothing. PC will be incremented upon next fetch()
+}
+
+void CPU::f_DAA()
+{
+	if (!this->registers.isFlagSet(N)) // An addition occurred
+	{
+		if (this->registers.isFlagSet(C) || this->registers.a > 0x99) // If a carry occurred, or if a is greater than 0x99 (not BCD)
+		{
+			this->registers.a += 0x60;
+			this->registers.setFlag(C);
+		}
+		if (this->registers.isFlagSet(H) || (this->registers.a & 0x0f) > 0x09) // If a halfcarry occurred, or if lower nibble is greater than 0x09
+		{
+			this->registers.a += 0x06;
+		}
+	}
+	else // A subtraction occurred
+	{
+		if (this->registers.isFlagSet(C))
+			this->registers.a -= 0x60;
+		if (this->registers.isFlagSet(H))
+			this->registers.a -= 0x06;
+	}
+
+	// Always update these flags with DAA
+	this->registers.setFlag(H, false);
+	this->registers.setFlag(Z, this->registers.a == 0x00);
+}
+
+void CPU::f_CPL()
+{
+	this->registers.a = ~(this->registers.a);
+	this->registers.setFlag(N | H);
 }

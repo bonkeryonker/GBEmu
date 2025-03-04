@@ -68,6 +68,12 @@ struct REGISTERS {
 			this->f &= ~flag; // bitwise and with the complement of the flag
 	}
 
+	// Returns: TRUE if passed flag is set
+	bool isFlagSet(u8 flag)
+	{
+		return this->f & flag;
+	}
+
 	void printAsHex()
 	{
 		printf("%02X %02X\n", a, f);
