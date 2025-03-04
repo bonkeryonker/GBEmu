@@ -1,6 +1,6 @@
 #include "CPU.h"
 
-CPU::CPU(std::shared_ptr<RAM>& ram)
+CPU::CPU(std::shared_ptr<Memory>& ram)
 {
 	this->m_isHalted = false;
 	this->registers.setDefaultValues();

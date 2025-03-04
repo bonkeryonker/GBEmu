@@ -21,7 +21,7 @@
     <ClCompile Include="CPU.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="RAM.cpp">
+    <ClCompile Include="Memory.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Clock.cpp">
@@ -41,7 +41,7 @@
     <ClInclude Include="Registers.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="RAM.h">
+    <ClInclude Include="Memory.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Globals.h">

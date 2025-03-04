@@ -1,6 +1,59 @@
 #include "Cartridge.h"
- 
-bool Cartridge::loadFromFile(std::shared_ptr<RAM>& ram_ptr, const std::string& filepath)
+
+Cartridge::Cartridge()
+{
+	this->romBuf = new u8[MAX_CARTSIZE + 1];
+	for (auto i = 0; i <= MAX_CARTSIZE; i++)
+		this->romBuf[i] = 0x00;
+}
+
+Cartridge::~Cartridge()
+{
+#ifdef _DEBUG
+	printf("Rom buffer deleted.\n");
+#endif
+	delete[] this->romBuf;
+}
+
+bool Cartridge::loadROM(const std::string& pathToRom)
+{
+	std::ifstream romFile(pathToRom, std::ios::binary);
+	if (!romFile.is_open())
+	{
+		printf("Unable to open rom: %s for reading.\n", pathToRom.c_str());
+		return false;
+	}
+
+	romFile.read(reinterpret_cast<char*>(this->romBuf), MAX_CARTSIZE);
+	romFile.close();
+	return true;
+}
+
+u8 Cartridge::getItem(u16 address)
+{
+	if (address > MAX_CARTSIZE) // out of bounds!
+		return 0x00;
+
+	return this->romBuf[address];
+}
+
+bool Cartridge::dumpRomToFile(const std::string& filename)
+{
+	std::ofstream outFile(filename, std::ios::binary);
+	if (!outFile)
+	{
+		printf("Unable to open file for writing\n");
+		return false;
+	}
+	outFile.write(reinterpret_cast<const char*>(this->romBuf), MAX_CARTSIZE);
+	outFile.close();
+#ifdef _DEBUG
+	printf("ROM contents dumped to %s\n", filename.c_str());
+#endif
+	return true;
+}
+/*
+bool Cartridge::loadIntoRAM(std::shared_ptr<RAM>& ram_ptr, const std::string& filepath)
 {
 	u16 writeAddress = 0;
 	u16 bytesWritten = 0;
@@ -70,3 +123,4 @@ bool Cartridge::validateGlobalChecksum(std::shared_ptr<RAM>& ram_ptr)
 	checksum |= ram_ptr->getItem(GLOBAL_CHECKSUM_ADDRESS + 1);
 	return checksum == Cartridge::calculateGlobalChecksum(ram_ptr);
 }
+*/

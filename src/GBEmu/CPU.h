@@ -3,7 +3,7 @@
 #include <stdio.h>
 #include <memory>
 #include "Registers.h"
-#include "RAM.h"
+#include "Memory.h"
 #include "Instruction.h"
 class CPU
 {
@@ -11,7 +11,7 @@ class CPU
 public:
 	// Sets all register values to default values
 	// Program counter set to 0
-	CPU(std::shared_ptr<RAM>& ram);
+	CPU(std::shared_ptr<Memory>& ram);
 	CPU() = delete; // will never be generated, default constructor forbidden
 
 	// Public struct holding register data
@@ -37,7 +37,7 @@ private:
 	bool m_isHalted;
 
 	// Shared pointer to RAM object
-	std::shared_ptr<RAM> m_ram_ptr;
+	std::shared_ptr<Memory> m_ram_ptr;
 
 	// Call the correct function for this specific opcode
 	void executeInstruction(Mnemonic opcode);
