@@ -65,12 +65,23 @@ private:
 	// Load the stack pointer to the specified destination in ram
 	void f_LD_u16_SP(u16 dest);
 
+	// Load one byte of immediate data to the address specified by the value of the passed register.
+	void f_LD_ptr_r16_u8(const u16& addrSrcReg, u8 data);
+
 	// Add two 16-bit registers together, saving the result to destReg
 	// Flags: -, 0, H, C
 	void f_ADD_r16_r16(u16& destReg, u16& srcReg);
 
 	// Increment the value in passed register (reference)
 	void f_INC_r16(u16& reg);
+
+	// Increment the contents of memory pointed to by passed register.
+	// Flags: Z, 0, H (8bit), -
+	void f_INC_ptr(const u16& reg);
+
+	// Decrement the contents of memory pointed to by passed register.
+	// Flags: Z, 1, H (8bit), -
+	void f_DEC_ptr(const u16& reg);
 
 	// Increment the value in passed register (reference)
 	// Flags: Z, 0, H, -

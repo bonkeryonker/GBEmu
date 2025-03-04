@@ -102,6 +102,23 @@ enum Mnemonic
 	LD_E_L,
 	LD_E_ptrHL,
 	LD_E_A,
+
+	LD_H_B, // Opcode 0x60
+	LD_H_C,
+	LD_H_D,
+	LD_H_E,
+	LD_H_H,
+	LD_H_L,
+	LD_H_ptrHL,
+	LD_H_A,
+	LD_L_B,
+	LD_L_C,
+	LD_L_D,
+	LD_L_E,
+	LD_L_H,
+	LD_L_L,
+	LD_L_ptrHL,
+	LD_L_A,
 };
 
 class Instruction

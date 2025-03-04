@@ -179,13 +179,13 @@ void CPU::executeInstruction(Mnemonic opcode)
 		this->f_INC_r16(this->registers.sp);
 		break;
 	case INC_ptrHL:
-		//this->f_INC_ptr(this->registers.hl);
+		this->f_INC_ptr(this->registers.hl);
 		break;
 	case DEC_ptrHL:
-		//this->f_DEC_ptr(this->registers.hl);
+		this->f_DEC_ptr(this->registers.hl);
 		break;
 	case LD_ptrHL_u8:
-		// todo
+		this->f_LD_ptr_r16_u8(this->registers.hl, this->getU8Immediate());
 		break;
 	case SCF:
 		this->registers.setFlag(C);
@@ -368,6 +368,11 @@ void CPU::f_LD_u16_SP(u16 dest)
 	this->m_ram_ptr->setItem(dest + 1, sp_hi);
 }
 
+void CPU::f_LD_ptr_r16_u8(const u16& addrSrcreg, u8 data)
+{
+	this->m_ram_ptr->setItem(addrSrcreg, data);
+}
+
 void CPU::f_ADD_r16_r16(u16& destReg, u16& srcReg)
 {
 	// reg & 0x0FFF extracts lower 12 bits of register
@@ -400,6 +405,30 @@ void CPU::f_INC_r8(u8& reg)
 	this->registers.setFlag(FLAGS::H, halfCarryFlag);
 	this->registers.setFlag(FLAGS::Z, isZeroFlag);
 	this->registers.setFlag(FLAGS::N, false);
+}
+
+void CPU::f_INC_ptr(const u16& reg)
+{
+	u8 originalVal = this->m_ram_ptr->getItem(reg);
+	bool halfCarryFlag = ((originalVal & 0x0F) + 1) & 0x10;
+	originalVal++;
+	bool isZeroFlag = (reg == 0);
+	this->m_ram_ptr->setItem(reg, originalVal);
+
+	this->registers.setFlag(FLAGS::H, halfCarryFlag);
+	this->registers.setFlag(FLAGS::Z, isZeroFlag);
+	this->registers.setFlag(FLAGS::N, false);
+}
+
+void CPU::f_DEC_ptr(const u16& reg)
+{
+	u8 originalVal = this->m_ram_ptr->getItem(reg);
+	bool halfCarryFlag = (originalVal & 0x0F) == 0;
+	originalVal--;
+	bool isZeroFlag = (reg == 0);
+	this->registers.setFlag(H, halfCarryFlag);
+	this->registers.setFlag(Z, isZeroFlag);
+	this->registers.setFlag(N, true);
 }
 
 void CPU::f_DEC_r16(u16& reg)
