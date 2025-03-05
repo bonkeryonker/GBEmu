@@ -70,10 +70,6 @@ public:
 	bool dumpMemoryToFile(const std::string& filename="../../bin/memdumps/mem_dump.bin", bool dumpCartridge=true);
 	inline bool dumpMemoryToFile(bool dumpCartridge) { return this->dumpMemoryToFile("../../bin/memdumps/mem_dump.bin", dumpCartridge); }
 
-	// Uses writeStringsASCII to write ascii text at the beginning of all memory maps
-	// specified in MemoryMap.
-	void setDebugValues();
-
 private:
 	u8* ramBuf;
 	std::shared_ptr<Cartridge> cart_ptr;

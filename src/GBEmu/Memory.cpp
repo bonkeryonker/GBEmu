@@ -33,22 +33,6 @@ bool Memory::setItem(u16 address, u8 value)
 	return true;
 }
 
-void Memory::setDebugValues()
-{
-	this->writeStringASCII(ROMBANK00, "ROMBANK00");
-	this->writeStringASCII(ROMBANK01_N, "ROMBANK01_N");
-	this->writeStringASCII(VRAM, "VRAM");
-	this->writeStringASCII(EXTERNALRAM, "EXTERNALRAM");
-	this->writeStringASCII(WRAM0, "WRAM0");
-	this->writeStringASCII(WRAM1, "WRAM1");
-	this->writeStringASCII(ECHO, "ECHO");
-	this->writeStringASCII(OAM, "OAM");
-	this->writeStringASCII(FORBIDDEN, "FORBIDDEN");
-	this->writeStringASCII(IO, "IO");
-	this->writeStringASCII(HRAM, "HRAM");
-	this->writeStringASCII(IE, "I");
-}
-
 bool Memory::dumpMemoryToFile(const std::string& filename, bool dumpCartridge)
 {
 	if(dumpCartridge)

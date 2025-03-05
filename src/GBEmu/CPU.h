@@ -48,8 +48,10 @@ private:
 	// Returns: u16 pointed at by PC. Increments PC by 2
 	u16 getU16Immediate();
 
-	/* Opcode Functions */
+
+	/* Opcode Functions implemented in CPU_OpcodeFuncs.cpp */
 	
+	// No operation, do nothing.
 	void f_NOP();
 
 	// Load data into destination register (reference)
