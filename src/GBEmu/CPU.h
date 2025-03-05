@@ -72,6 +72,14 @@ private:
 	// Flags: -, 0, H, C
 	void f_ADD_r16_r16(u16& destReg, u16& srcReg);
 
+	// Add the value of srcReg to the value stored in the accumulator. Store the result in the accumulator.
+	// Flags: Z, 0, H, C
+	void f_ADD(const u8 srcReg);
+
+	// Add the value of srcReg and the value of the CY flag to the value stored in the accumulator. Store the result in the accumulator.
+	// Flags: Z, 0, H, C
+	void f_ADDC(const u8 srcReg);
+
 	// Increment the value in passed register (reference)
 	void f_INC_r16(u16& reg);
 
@@ -112,8 +120,13 @@ private:
 
 	// Halts the CPU oscillator and the LCD.
 	// Opcode is 0x1000, though I'm not sure if the value of nextByte matters
-	// TODO: Continue operation when any button is pushed (http://marc.rawer.de/Gameboy/Docs/GBCPUman.pdf)
+	// This operation apparently is weird as hell. See the pandocs for details (https://gbdev.io/pandocs/Reducing_Power_Consumption.html#using-the-stop-instruction)
+	// TODO: Implement properly according to pandoc spec
 	void f_STOP(const u8 nextByte);
+
+	// Halts the System Clock and LCD.
+	// See pandoc for details (https://gbdev.io/pandocs/Reducing_Power_Consumption.html#using-the-stop-instruction)
+	void f_HALT();
 
 	// Read 1 byte of immediate data, and jump that many memory addresses forward.
 	// TODO: Verify functionality on actual hardware. (See function definition for more details)

@@ -118,7 +118,6 @@ enum Mnemonic
 	LD_L_L,
 	LD_L_ptrHL,
 	LD_L_A,
-
 	LD_ptrHL_B, // Opcode 0x70
 	LD_ptrHL_C,
 	LD_ptrHL_D,

@@ -379,7 +379,7 @@ void CPU::executeInstruction(Mnemonic opcode)
 		this->f_LD_ptr(this->registers.hl, this->registers.l);
 		break;
 	case HALT:
-		//this->f_HALT();
+		this->f_HALT();
 		break;
 	case LD_ptrHL_A:
 		this->f_LD_ptr(this->registers.hl, this->registers.a);
@@ -431,6 +431,7 @@ u16 CPU::getU16Immediate()
 }
 
 /* Opcode Functions */
+
 void CPU::f_NOP()
 {
 	return;
@@ -458,8 +459,8 @@ void CPU::f_LD_r8_ptr(u8& destReg, u16& dataReg)
 
 void CPU::f_LD_u16_SP(u16 dest)
 {
-	u8 sp_lo = (this->registers.sp >> 8);
-	u8 sp_hi = (this->registers.sp & 0xff);
+	u8 sp_lo = (this->registers.sp >> 8); // Low byte of SP
+	u8 sp_hi = (this->registers.sp & 0xff); // High byte of SP
 	this->m_ram_ptr->setItem(dest, sp_lo);
 	this->m_ram_ptr->setItem(dest + 1, sp_hi);
 }
@@ -481,6 +482,57 @@ void CPU::f_ADD_r16_r16(u16& destReg, u16& srcReg)
 
 	destReg += srcReg;
 
+	this->registers.setFlag(N, false);
+	this->registers.setFlag(H, halfcarry);
+	this->registers.setFlag(C, carry);
+}
+
+void CPU::f_ADD(const u8 srcReg)
+{
+	u8& regA = this->registers.a; // reference to accumulator register
+
+	// reg 0x0F extracts lower nibble of byte
+	// Add just the lower nibbles, and if it's bigger than 0x0F then a halfcarry occurred
+	bool halfcarry = ((regA & 0x0F) + (srcReg & 0x0F)) > 0x0F;
+
+	// Cast to u16 to check for overflow beyond 8 bits
+	// Add the two bytes and if they're bigger than 0xFF then a carry occurred
+	bool carry = ((u16)regA + (u16)srcReg) > 0xFF;
+
+	// Perform the addition
+	regA += srcReg;
+
+	// Check if we should set the Z flag
+	bool isZero = (regA == 0);
+
+	// Set flags
+	this->registers.setFlag(Z, isZero);
+	this->registers.setFlag(N, false);
+	this->registers.setFlag(H, halfcarry);
+	this->registers.setFlag(C, carry);
+}
+
+void CPU::f_ADDC(const u8 srcReg)
+{
+	u8& regA = this->registers.a; // reference to accumulator register
+	u8 carryFlagVal = (registers.isFlagSet(C)) ? 0x01 : 0x00;
+
+	// reg 0x0F extracts lower nibble of byte
+	// Add just the lower nibbles and the carry flag value, and if it's bigger than 0x0F then a halfcarry occurred
+	bool halfcarry = ((regA & 0x0F) + (srcReg & 0x0F) + carryFlagVal) > 0x0F;
+
+	// Cast to u16 to check for overflow beyond 8 bits
+	// Add the two bytes and the carry flag value, and if they're bigger than 0xFF then a carry occurred
+	bool carry = ((u16)regA + (u16)srcReg + carryFlagVal) > 0xFF;
+
+	// Perform the addition
+	regA += srcReg + carryFlagVal;
+
+	// Check if we should set the Z flag
+	bool isZero = (regA == 0);
+
+	// Set flags
+	this->registers.setFlag(Z, isZero);
 	this->registers.setFlag(N, false);
 	this->registers.setFlag(H, halfcarry);
 	this->registers.setFlag(C, carry);
@@ -589,6 +641,12 @@ void CPU::f_STOP(const u8 nextByte)
 	{
 		this->m_isHalted = true;
 	}
+}
+
+void CPU::f_HALT()
+{
+	this->m_isHalted = true;
+	this->registers.pc++; // The system is halted at the operation after the halt instruction
 }
 
 void CPU::f_JR_u8(u8 steps)
