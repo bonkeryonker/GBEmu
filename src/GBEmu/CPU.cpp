@@ -360,6 +360,54 @@ void CPU::executeInstruction(Mnemonic opcode)
 	case LD_L_A:
 		this->f_LD(this->registers.l, this->registers.a);
 		break;
+	case LD_ptrHL_B:
+		this->f_LD_ptr(this->registers.hl, this->registers.b);
+		break;
+	case LD_ptrHL_C:
+		this->f_LD_ptr(this->registers.hl, this->registers.c);
+		break;
+	case LD_ptrHL_D:
+		this->f_LD_ptr(this->registers.hl, this->registers.d);
+		break;
+	case LD_ptrHL_E:
+		this->f_LD_ptr(this->registers.hl, this->registers.e);
+		break;
+	case LD_ptrHL_H:
+		this->f_LD_ptr(this->registers.hl, this->registers.h);
+		break;
+	case LD_ptrHL_L:
+		this->f_LD_ptr(this->registers.hl, this->registers.l);
+		break;
+	case HALT:
+		//this->f_HALT();
+		break;
+	case LD_ptrHL_A:
+		this->f_LD_ptr(this->registers.hl, this->registers.a);
+		break;
+	case LD_A_B:
+		this->f_LD(this->registers.a, this->registers.b);
+		break;
+	case LD_A_C:
+		this->f_LD(this->registers.a, this->registers.c);
+		break;
+	case LD_A_D:
+		this->f_LD(this->registers.a, this->registers.d);
+		break;
+	case LD_A_E:
+		this->f_LD(this->registers.a, this->registers.e);
+		break;
+	case LD_A_H:
+		this->f_LD(this->registers.a, this->registers.h);
+		break;
+	case LD_A_L:
+		this->f_LD(this->registers.a, this->registers.l);
+		break;
+	case LD_A_ptrHL:
+		this->f_LD_r8_ptr(this->registers.a, this->registers.hl);
+		break;
+	case LD_A_A:
+		this->f_LD(this->registers.a, this->registers.a);
+		break;
 	}
 }
 

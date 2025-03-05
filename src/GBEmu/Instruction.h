@@ -69,6 +69,7 @@ enum Mnemonic
 	LD_A_u8, // Load one byte of immediate data into A
 	CCF, // Flip the carry flag
 
+	/* General Load Instructions */
 	LD_B_B, // Opcode 0x40
 	LD_B_C,
 	LD_B_D,
@@ -85,7 +86,6 @@ enum Mnemonic
 	LD_C_L,
 	LD_C_ptrHL, // Load the contents of memory specified by the contents of HL into C register
 	LD_C_A,
-
 	LD_D_B, // Opcode 0x50
 	LD_D_C,
 	LD_D_D,
@@ -102,7 +102,6 @@ enum Mnemonic
 	LD_E_L,
 	LD_E_ptrHL,
 	LD_E_A,
-
 	LD_H_B, // Opcode 0x60
 	LD_H_C,
 	LD_H_D,
@@ -119,6 +118,23 @@ enum Mnemonic
 	LD_L_L,
 	LD_L_ptrHL,
 	LD_L_A,
+
+	LD_ptrHL_B, // Opcode 0x70
+	LD_ptrHL_C,
+	LD_ptrHL_D,
+	LD_ptrHL_E,
+	LD_ptrHL_H,
+	LD_ptrHL_L,
+	HALT, // Stop system clock. Cancelled by interrupt or reset signal
+	LD_ptrHL_A,
+	LD_A_B,
+	LD_A_C,
+	LD_A_D,
+	LD_A_E,
+	LD_A_H,
+	LD_A_L,
+	LD_A_ptrHL,
+	LD_A_A,
 };
 
 class Instruction
