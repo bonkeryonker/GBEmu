@@ -33,7 +33,7 @@ public:
 private:
 
 	// Current status of CPU.
-	// Set to true if STOP operation is executed.
+	// Set to true if STOP or HALT operation is executed.
 	bool m_isHalted;
 
 	// Shared pointer to RAM object
