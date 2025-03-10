@@ -151,7 +151,6 @@ enum Mnemonic
 	ADC_A_L,
 	ADC_A_ptrHL,
 	ADC_A_A,
-
 	SUB_B,
 	SUB_C,
 	SUB_D,
@@ -168,6 +167,40 @@ enum Mnemonic
 	SBC_A_L,
 	SBC_A_ptrHL,
 	SBC_A_A,
+
+	AND_B,
+	AND_C,
+	AND_D,
+	AND_E,
+	AND_H,
+	AND_L,
+	AND_ptrHL,
+	AND_A,
+	XOR_B,
+	XOR_C,
+	XOR_D,
+	XOR_E,
+	XOR_H,
+	XOR_L,
+	XOR_ptrHL,
+	XOR_A,
+
+	OR_B,
+	OR_C,
+	OR_D,
+	OR_E,
+	OR_H,
+	OR_L,
+	OR_ptrHL,
+	OR_A,
+	CP_B, // Perform A-B, do not update contents of A. Set flags.
+	CP_C,
+	CP_D,
+	CP_E,
+	CP_H,
+	CP_L,
+	CP_ptrHL,
+	CP_A,
 };
 
 class Instruction

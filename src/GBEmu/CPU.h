@@ -90,6 +90,22 @@ private:
 	// Flags: Z, 1, H, CY
 	void f_SBC(const u8 srcReg);
 
+	// Perform logical AND with srcReg and accumulator. Store result in accumulator.
+	// Flags: Z, 0, 1, 0
+	void f_AND(const u8 srcReg);
+
+	// Perform logical XOR with srcReg and accumulator. Store result in accumulator.
+	// Flags: Z, 0, 0, 0
+	void f_XOR(const u8 srcReg);
+
+	// Perform logical OR with srcReg and accumulator. Store result in accumulator.
+	// Flags: Z, 0, 0, 0
+	void f_OR(const u8 srcReg);
+
+	// Compare contents of srcReg and accumulator by calculating A-B. Update flags, but don't affect accumulator contents.
+	// Flags: Z, 1, H, C
+	void f_CP(const u8 srcReg);
+
 	// Increment the value in passed register (reference)
 	void f_INC_r16(u16& reg);
 

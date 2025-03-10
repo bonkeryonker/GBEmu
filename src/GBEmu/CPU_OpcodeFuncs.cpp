@@ -135,6 +135,46 @@ void CPU::f_SBC(const u8 srcReg)
 	this->registers.setFlag(C, carry);
 }
 
+void CPU::f_AND(const u8 srcReg)
+{
+	this->registers.a &= srcReg;
+	bool isZeroFlag = this->registers.a == 0;
+
+	this->registers.setFlag(H, true);
+	this->registers.setFlag(Z, isZeroFlag);
+	this->registers.setFlag(N | C, false);
+}
+
+void CPU::f_XOR(const u8 srcReg)
+{
+	this->registers.a ^= srcReg;
+	bool isZeroFlag = this->registers.a == 0;
+
+	this->registers.setFlag(Z, isZeroFlag);
+	this->registers.setFlag(N | H | C, false);
+}
+
+void CPU::f_OR(const u8 srcReg)
+{
+	this->registers.a |= srcReg;
+	bool isZeroFlag = this->registers.a == 0;
+
+	this->registers.setFlag(Z, isZeroFlag);
+	this->registers.setFlag(N | H | C, false);
+}
+
+void CPU::f_CP(const u8 srcReg)
+{
+	bool halfCarry = (this->registers.a & 0x0F) < (srcReg & 0x0F); // Half carry if lower nibble of a < lower nibble of srcReg
+	bool carry = this->registers.a < srcReg; // Carry if a is less than srcReg
+	bool isZeroFlag = this->registers.a == srcReg; // Sub will equal zero
+
+	this->registers.setFlag(Z, isZeroFlag);
+	this->registers.setFlag(N, true);
+	this->registers.setFlag(H, halfCarry);
+	this->registers.setFlag(C, carry);
+}
+
 void CPU::f_INC_r16(u16& reg)
 {
 	reg++;

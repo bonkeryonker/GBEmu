@@ -455,6 +455,150 @@ void CPU::executeInstruction(Mnemonic opcode)
 	case ADC_A_A:
 		this->f_ADDC(this->registers.a);
 		break;
+	case SUB_B:
+		this->f_SUB(this->registers.b);
+		break;
+	case SUB_C:
+		this->f_SUB(this->registers.c);
+		break;
+	case SUB_D:
+		this->f_SUB(this->registers.d);
+		break;
+	case SUB_E:
+		this->f_SUB(this->registers.e);
+		break;
+	case SUB_H:
+		this->f_SUB(this->registers.h);
+		break;
+	case SUB_L:
+		this->f_SUB(this->registers.l);
+		break;
+	case SUB_ptrHL:
+		this->f_SUB(this->m_ram_ptr->getItem(this->registers.hl));
+		break;
+	case SUB_A:
+		this->f_SUB(this->registers.a);
+		break;
+	case SBC_A_B:
+		this->f_SBC(this->registers.b);
+		break;
+	case SBC_A_C:
+		this->f_SBC(this->registers.c);
+		break;
+	case SBC_A_D:
+		this->f_SBC(this->registers.d);
+		break;
+	case SBC_A_E:
+		this->f_SBC(this->registers.e);
+		break;
+	case SBC_A_H:
+		this->f_SBC(this->registers.h);
+		break;
+	case SBC_A_L:
+		this->f_SBC(this->registers.l);
+		break;
+	case SBC_A_ptrHL:
+		this->f_SBC(this->m_ram_ptr->getItem(this->registers.hl));
+		break;
+	case SBC_A_A:
+		this->f_SBC(this->registers.a);
+		break;
+	case AND_B:
+		this->f_AND(this->registers.b);
+		break;
+	case AND_C:
+		this->f_AND(this->registers.c);
+		break;
+	case AND_D:
+		this->f_AND(this->registers.d);
+		break;
+	case AND_E:
+		this->f_AND(this->registers.e);
+		break;
+	case AND_H:
+		this->f_AND(this->registers.h);
+		break;
+	case AND_L:
+		this->f_AND(this->registers.l);
+		break;
+	case AND_ptrHL:
+		this->f_AND(this->m_ram_ptr->getItem(this->registers.hl));
+		break;
+	case AND_A:
+		this->f_AND(this->registers.a);
+		break;
+	case XOR_B:
+		this->f_XOR(this->registers.b);
+		break;
+	case XOR_C:
+		this->f_XOR(this->registers.c);
+		break;
+	case XOR_D:
+		this->f_XOR(this->registers.d);
+		break;
+	case XOR_E:
+		this->f_XOR(this->registers.e);
+		break;
+	case XOR_H:
+		this->f_XOR(this->registers.h);
+		break;
+	case XOR_L:
+		this->f_XOR(this->registers.l);
+		break;
+	case XOR_ptrHL:
+		this->f_XOR(this->m_ram_ptr->getItem(this->registers.hl));
+		break;
+	case XOR_A:
+		this->f_XOR(this->registers.a);
+		break;
+	case OR_B:
+		this->f_OR(this->registers.b);
+		break;
+	case OR_C:
+		this->f_OR(this->registers.c);
+		break;
+	case OR_D:
+		this->f_OR(this->registers.d);
+		break;
+	case OR_E:
+		this->f_OR(this->registers.e);
+		break;
+	case OR_H:
+		this->f_OR(this->registers.h);
+		break;
+	case OR_L:
+		this->f_OR(this->registers.l);
+		break;
+	case OR_ptrHL:
+		this->f_OR(this->m_ram_ptr->getItem(this->registers.hl));
+		break;
+	case OR_A:
+		this->f_OR(this->registers.a);
+		break;
+	case CP_B:
+		this->f_CP(this->registers.b);
+		break;
+	case CP_C:
+		this->f_CP(this->registers.c);
+		break;
+	case CP_D:
+		this->f_CP(this->registers.d);
+		break;
+	case CP_E:
+		this->f_CP(this->registers.e);
+		break;
+	case CP_H:
+		this->f_CP(this->registers.h);
+		break;
+	case CP_L:
+		this->f_CP(this->registers.l);
+		break;
+	case CP_ptrHL:
+		this->f_CP(this->m_ram_ptr->getItem(this->registers.hl));
+		break;
+	case CP_A:
+		this->f_CP(this->registers.a);
+		break;
 	}
 }
 
