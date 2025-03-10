@@ -134,6 +134,7 @@ enum Mnemonic
 	LD_A_L,
 	LD_A_ptrHL,
 	LD_A_A,
+	/* ALU Operations */
 	ADD_A_B,
 	ADD_A_C,
 	ADD_A_D,
