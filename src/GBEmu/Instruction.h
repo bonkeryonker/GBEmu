@@ -134,7 +134,6 @@ enum Mnemonic
 	LD_A_L,
 	LD_A_ptrHL,
 	LD_A_A,
-
 	ADD_A_B,
 	ADD_A_C,
 	ADD_A_D,
@@ -167,7 +166,6 @@ enum Mnemonic
 	SBC_A_L,
 	SBC_A_ptrHL,
 	SBC_A_A,
-
 	AND_B,
 	AND_C,
 	AND_D,
@@ -184,7 +182,6 @@ enum Mnemonic
 	XOR_L,
 	XOR_ptrHL,
 	XOR_A,
-
 	OR_B,
 	OR_C,
 	OR_D,
@@ -193,14 +190,14 @@ enum Mnemonic
 	OR_L,
 	OR_ptrHL,
 	OR_A,
-	CP_B, // Perform A-B, do not update contents of A. Set flags.
-	CP_C,
-	CP_D,
-	CP_E,
-	CP_H,
-	CP_L,
-	CP_ptrHL,
-	CP_A,
+	CP_B, // Perform a subtraction to compare value of B with A. Update flags, do not store result.
+	CP_C, // Perform a subtraction to compare value of C with A. Update flags, do not store result.
+	CP_D, // Perform a subtraction to compare value of D with A. Update flags, do not store result.
+	CP_E, // Perform a subtraction to compare value of E with A. Update flags, do not store result.
+	CP_H, // Perform a subtraction to compare value of H with A. Update flags, do not store result.
+	CP_L, // Perform a subtraction to compare value of L with A. Update flags, do not store result.
+	CP_ptrHL, // Perform a subtraction to compare value in ram pointed to by HL with A. Update flags, do not store result.
+	CP_A, // Perform a subtraction to compare value of A with A. Update flags, do not store result.
 };
 
 class Instruction
