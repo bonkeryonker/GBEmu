@@ -9,11 +9,13 @@
 int main()
 {
 	std::shared_ptr<Cartridge> cart_ptr = std::make_shared<Cartridge>();
-	cart_ptr->loadROM("../../bin/testROMs/nopStop.gb");
+	cart_ptr->loadROM("../../bin/testROMs/testAdd.gb");
 	std::shared_ptr<Memory> ram_ptr = std::make_shared<Memory>(cart_ptr);
 	CPU c(ram_ptr);
+	while(!c.isHalted())
+		Clock::tick(c);
 
-	ram_ptr->setItem(IE, 0x1a);
+	//ram_ptr->setItem(IE, 0x1a);
 	// Finish up
 	c.registers.printAsHex();
 	printf("Halted: %s\n", c.isHalted() ? "TRUE" : "FALSE");

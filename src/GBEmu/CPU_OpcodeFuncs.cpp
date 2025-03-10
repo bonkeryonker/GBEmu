@@ -108,6 +108,33 @@ void CPU::f_ADDC(const u8 srcReg)
 	this->registers.setFlag(C, carry);
 }
 
+void CPU::f_SUB(const u8 srcReg)
+{
+	bool halfCarry = (this->registers.a & 0x0F) < (srcReg & 0x0F); // Half carry if lower nibble of a < lower nibble of srcReg
+	bool carry = this->registers.a < srcReg; // Carry if a is less than srcReg
+	bool isZeroFlag = this->registers.a == srcReg; // Sub will equal zero
+	this->registers.a -= srcReg;
+
+	this->registers.setFlag(Z, isZeroFlag);
+	this->registers.setFlag(N, true);
+	this->registers.setFlag(H, halfCarry);
+	this->registers.setFlag(C, carry);
+}
+
+void CPU::f_SBC(const u8 srcReg)
+{
+	u8 carryVal = (this->registers.isFlagSet(C)) ? 0x01 : 0x00;
+	bool halfCarry = (this->registers.a & 0x0F) < ((srcReg & 0x0F) + carryVal);
+	bool carry = (this->registers.a < (srcReg + carryVal));
+	bool isZeroFlag = (this->registers.a - srcReg - carryVal) == 0;
+	this->registers.a -= (srcReg + carryVal);
+
+	this->registers.setFlag(Z, isZeroFlag);
+	this->registers.setFlag(N, true);
+	this->registers.setFlag(H, halfCarry);
+	this->registers.setFlag(C, carry);
+}
+
 void CPU::f_INC_r16(u16& reg)
 {
 	reg++;

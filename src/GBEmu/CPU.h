@@ -82,6 +82,14 @@ private:
 	// Flags: Z, 0, H, C
 	void f_ADDC(const u8 srcReg);
 
+	// Subtract the value of srcReg from the value stored in the accumulator. Store the result in the accumulator.
+	// Flags: Z, 1, H, C
+	void f_SUB(const u8 srcReg);
+
+	// Subtract the value of srcReg and the value of the CY flag from the value stored in the accumulator. Store the result in the accumulator.
+	// Flags: Z, 1, H, CY
+	void f_SBC(const u8 srcReg);
+
 	// Increment the value in passed register (reference)
 	void f_INC_r16(u16& reg);
 

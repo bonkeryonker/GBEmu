@@ -16,7 +16,6 @@ unsigned short CPU::tick()
 
 void CPU::executeInstruction(Mnemonic opcode)
 {
-	//printf("OP@%04X: %02X\n", this->registers.pc, opcode);
 	switch (opcode)
 	{
 	case NOP:
@@ -407,6 +406,54 @@ void CPU::executeInstruction(Mnemonic opcode)
 		break;
 	case LD_A_A:
 		this->f_LD(this->registers.a, this->registers.a);
+		break;
+	case ADD_A_B:
+		this->f_ADD(this->registers.b);
+		break;
+	case ADD_A_C:
+		this->f_ADD(this->registers.c);
+		break;
+	case ADD_A_D:
+		this->f_ADD(this->registers.d);
+		break;
+	case ADD_A_E:
+		this->f_ADD(this->registers.e);
+		break;
+	case ADD_A_H:
+		this->f_ADD(this->registers.h);
+		break;
+	case ADD_A_L:
+		this->f_ADD(this->registers.l);
+		break;
+	case ADD_A_ptrHL:
+		this->f_ADD(this->m_ram_ptr->getItem(this->registers.hl));
+		break;
+	case ADD_A_A:
+		this->f_ADD(this->registers.a);
+		break;
+	case ADC_A_B:
+		this->f_ADDC(this->registers.b);
+		break;
+	case ADC_A_C:
+		this->f_ADDC(this->registers.c);
+		break;
+	case ADC_A_D:
+		this->f_ADDC(this->registers.d);
+		break;
+	case ADC_A_E:
+		this->f_ADDC(this->registers.e);
+		break;
+	case ADC_A_H:
+		this->f_ADDC(this->registers.h);
+		break;
+	case ADC_A_L:
+		this->f_ADDC(this->registers.l);
+		break;
+	case ADC_A_ptrHL:
+		this->f_ADDC(this->m_ram_ptr->getItem(this->registers.hl));
+		break;
+	case ADC_A_A:
+		this->f_ADDC(this->registers.a);
 		break;
 	}
 }

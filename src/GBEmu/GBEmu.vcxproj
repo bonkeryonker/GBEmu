@@ -142,7 +142,7 @@
     <ClCompile Include="Cartridge.cpp" />
     <ClCompile Include="Clock.cpp" />
     <ClCompile Include="CPU.cpp" />
-    <ClCompile Include="CPU_FuncImpl.cpp" />
+    <ClCompile Include="CPU_OpcodeFuncs.cpp" />
     <ClCompile Include="Instruction.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Memory.cpp" />
