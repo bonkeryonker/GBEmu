@@ -3,6 +3,7 @@
 CPU::CPU(std::shared_ptr<Memory>& ram)
 {
 	this->m_isHalted = false;
+	// Initialize SP to high ram (0xFFFE) and PC to beginning of header (0x0100)
 	this->registers.setDefaultValues();
 	this->m_ram_ptr = ram;
 }
@@ -10,6 +11,7 @@ CPU::CPU(std::shared_ptr<Memory>& ram)
 unsigned short CPU::tick()
 {	
 	Instruction currentOp = Instruction::opcodeLookup[this->fetch()];
+	printf("%04X : %02X\n", this->registers.pc - 1, currentOp.opcode);
 	this->executeInstruction(currentOp.opcode);
 	return currentOp.timing;
 }
@@ -598,6 +600,54 @@ void CPU::executeInstruction(Mnemonic opcode)
 		break;
 	case CP_A:
 		this->f_CP(this->registers.a);
+		break;
+	case RET_NZ:
+		this->f_RET_flag(Z, false);
+		break;
+	case POP_BC:
+		this->f_POP(this->registers.bc);
+		break;
+	case JP_NZ_u16:
+		this->f_JP_flag(this->getU16Immediate(), Z, false);
+		break;
+	case JP_u16:
+		this->f_JP(this->getU16Immediate());
+		break;
+	case CALL_NZ_u16:
+		this->f_CALL_flag(this->getU16Immediate(), Z, false);
+		break;
+	case PUSH_BC:
+		this->f_PUSH(this->registers.bc);
+		break;
+	case ADD_A_u8:
+		this->f_ADD(this->getU8Immediate());
+		break;
+	case RST_0:
+		this->f_RST_n(0);
+		break;
+	case RET_Z:
+		this->f_RET_flag(Z, true);
+		break;
+	case RET:
+		this->f_RET();
+		break;
+	case JP_Z_u16:
+		this->f_JP_flag(this->getU16Immediate(), Z, true);
+		break;
+	case CB_OFFSET:
+		// offset opcode
+		break;
+	case CALL_Z_u16:
+		this->f_CALL_flag(this->getU16Immediate(), Z, true);
+		break;
+	case CALL_u16:
+		this->f_CALL(this->getU16Immediate());
+		break;
+	case ADC_A_u8:
+		this->f_ADDC(this->getU8Immediate());
+		break;
+	case RST_1:
+		this->f_RST_n(1);
 		break;
 	}
 }

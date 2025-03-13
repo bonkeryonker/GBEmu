@@ -6,7 +6,6 @@
 #include <functional>
 #include "Globals.h"
 #include "CPU.h"
-#define _TEST
 
 constexpr double T_CYCLE_HZ = 4194304.0; //4.194304 MHz
 constexpr double T_CYCLE_NS = (1.0 / T_CYCLE_HZ) * 1e9; //238.418 ns per cycle

@@ -292,7 +292,7 @@ void CPU::f_JR_u8(u8 steps)
 	// so we'll have to decrement it before we actually jump that amount. I'm not sure if
 	// this is how it works in hardware, so we may need to delete this line if it doesn't
 	// work with actual ROMs.
-	steps--;
+	//steps--;
 	this->registers.pc += steps;
 #ifdef _DEBUG
 	printf("Jumped to %04X\n", this->registers.pc);
@@ -303,6 +303,26 @@ void CPU::f_JR_flag(u8 steps, u8 FLAG, bool jumpIfFlag)
 {
 	if ((jumpIfFlag == this->registers.isFlagSet(FLAG)))
 		this->f_JR_u8(steps);
+	else //do nothing. PC will be incremented upon next fetch()
+	{
+#ifdef _DEBUG
+		printf("Didn't jump to %04X because of flag value.\n", this->registers.pc + steps);
+#endif
+	}
+}
+
+void CPU::f_JP(u16 destAddr)
+{
+	this->registers.pc = destAddr;
+#ifdef _DEBUG
+	printf("Jumped to %04X\n", this->registers.pc);
+#endif
+}
+
+void CPU::f_JP_flag(u16 destAddr, u8 FLAG, bool jumpIfFlag)
+{
+	if (this->registers.isFlagSet(FLAG) == jumpIfFlag)
+		this->f_JP(destAddr);
 	//else do nothing. PC will be incremented upon next fetch()
 }
 
@@ -337,4 +357,102 @@ void CPU::f_CPL()
 {
 	this->registers.a = ~(this->registers.a);
 	this->registers.setFlag(N | H);
+}
+
+void CPU::f_RET()
+{
+	// Subtract one to account for extra fetch() incrementing PC
+	this->registers.pc--;
+	this->f_POP(this->registers.pc);
+}
+
+void CPU::f_RET_flag(u8 FLAG, bool retIfFlag)
+{
+	if (this->registers.isFlagSet(FLAG) == retIfFlag)
+		this->f_RET();
+	// else do nothing. PC will be incremented upon next fetch()
+}
+
+void CPU::f_PUSH(const u16 srcReg)
+{
+	this->m_ram_ptr->setItem(this->registers.sp - 1, (srcReg & 0xFF00) >> 8); // Push high byte of srcReg
+	this->m_ram_ptr->setItem(this->registers.sp - 2, srcReg & 0x00FF); // Push low byte of srcReg
+	this->registers.sp -= 2; // Decrement SP by two
+#ifdef _DEBUG
+	this->m_stackSizeCounter++;
+	printf("Pushed %02X%02X to stack.\nStack size: %u, SP: %04X\n", (srcReg & 0xFF00) >> 8, (srcReg & 0x00FF), (this->m_stackSizeCounter), (this->registers.sp));
+#endif
+}
+
+void CPU::f_POP(u16& destReg)
+{
+	u8 lowByte = this->m_ram_ptr->getItem(this->registers.sp);
+	u8 highByte = this->m_ram_ptr->getItem(this->registers.sp + 1);
+	destReg = lowByte;
+	destReg |= (highByte) << 8;
+	this->registers.sp += 2;
+
+#ifdef _DEBUG
+	this->m_stackSizeCounter--;
+	printf("Popped %04X from stack.\nStack size: %u, SP: %04X\n", destReg, (this->m_stackSizeCounter), (this->registers.sp));
+#endif
+}
+
+void CPU::f_CALL(const u16 callAddr)
+{
+	this->f_PUSH(this->registers.pc);
+	this->registers.pc = callAddr;
+}
+
+void CPU::f_CALL_flag(const u16 callAddr, u8 FLAG, bool callIfFlag)
+{
+	if (this->registers.isFlagSet(FLAG) == callIfFlag)
+		this->f_CALL(callAddr);
+	// else do nothing. PC will be incremented upon next fetch()
+}
+
+void CPU::f_RST_n(u8 n)
+{
+	this->f_PUSH(this->registers.pc);
+	switch (n)
+	{
+	case 0:
+		this->registers.pc = 0x0000;
+		break;
+	case 1:
+		this->registers.pc = 0x0008;
+		break;
+	case 2:
+		this->registers.pc = 0x0010;
+		break;
+	case 3:
+		this->registers.pc = 0x0018;
+		break;
+	case 4:
+		this->registers.pc = 0x0020;
+		break;
+	case 5:
+		this->registers.pc = 0x0028;
+		break;
+	case 6:
+		this->registers.pc = 0x0030;
+		break;
+	case 7:
+		this->registers.pc = 0x0038;
+		break;
+	default:
+		this->registers.pc = 0x0000;
+		this->m_isHalted = true;
+#ifdef _DEBUG
+		printf("Invalid reset code %d. Halting.\n", n);
+#endif
+		break;
+
+	}
+}
+
+void CPU::f_ILLEGAL_OP(const u8 opcode)
+{
+	printf("Illegal opcode %02X encountered at memory address %04X\n Halting.\n", opcode, this->registers.pc - 1);
+	this->m_isHalted = true;
 }
