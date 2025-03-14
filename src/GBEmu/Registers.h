@@ -96,8 +96,8 @@ struct REGISTERS {
 		bc = 0x0000;
 		de = 0x0000;
 		hl = 0x0000;
-		sp = 0xFFFE;
-		pc = 0x0100;
+		sp = 0xFFFE; // Typically where the SP begins
+		pc = 0x0100; // Skip bootrom, start execution at beginning of header
 	}
 };
 

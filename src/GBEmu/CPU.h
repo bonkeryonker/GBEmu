@@ -7,7 +7,9 @@
 #include "Instruction.h"
 class CPU
 {
-
+	// We may need to rework the CPU class to better emulate real hardware when we implement interrupts.
+	// Let's hope we don't need to, but if so this will prove an invaluable resource:
+	// https://gist.github.com/SonoSooS/c0055300670d678b5ae8433e20bea595#fetch-and-stuff
 public:
 	// Sets all register values to default values
 	// Program counter set to 0
@@ -151,7 +153,7 @@ private:
 	// Halts the CPU oscillator and the LCD.
 	// Opcode is 0x1000, though I'm not sure if the value of nextByte matters
 	// This operation apparently is weird as hell. See the pandocs for details (https://gbdev.io/pandocs/Reducing_Power_Consumption.html#using-the-stop-instruction)
-	// TODO: Implement properly according to pandoc spec
+	// TODO: Implement properly according to pandoc spec. For now, just HALT
 	void f_STOP(const u8 nextByte);
 
 	// Halts the System Clock and LCD.
@@ -159,7 +161,6 @@ private:
 	void f_HALT();
 
 	// Read 1 byte of immediate data, and jump that many memory addresses forward.
-	// TODO: Verify functionality on actual hardware. (See function definition for more details)
 	// (PC += steps)
 	void f_JR_u8(u8 steps);
 
@@ -213,7 +214,8 @@ private:
 	void f_CALL_flag(const u16 callAddr, u8 FLAG, bool callIfFlag = true);
 
 	// Push the current PC to the memory stack and load address corresponding to passed
-	// variable to the PC. Table is as such below:
+	// variable to the PC. If an invalid value for n (not 0-7) is passed into this function, it will load value 0x0000 to PC and halt the CPU.
+	// Table is as such below:
 	// RST 0 : Load 0x0000 to PC
 	// RST 1 : Load 0x0008 to PC
 	// RST 2 : Load 0x0010 to PC
@@ -222,10 +224,10 @@ private:
 	// RST 5 : Load 0x0028 to PC
 	// RST 6 : Load 0x0030 to PC
 	// RST 7 : Load 0x0038 to PC
-	// If an invalid value for n (not 0-7) is passed into this function, it will load value 0x0000 to PC
-	// and halt the CPU.
 	void f_RST_n(u8 n);
 
+	// Attempted to execute invalid CPU opcode.
+	// Halt the CPU and print the current opcode. Dump memory.
 	void f_ILLEGAL_OP(const u8 opcode);
 };
 #endif
