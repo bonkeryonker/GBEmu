@@ -10,6 +10,8 @@ CPU::CPU(std::shared_ptr<Memory>& ram)
 
 unsigned short CPU::tick()
 {	
+	// TODO: Check and update interrupts
+	// (https://www.reddit.com/r/EmuDev/comments/1hgupxq/gameboy_interrupts/)
 	Instruction currentOp = Instruction::opcodeLookup[this->fetch()];
 	printf("%04X : %02X\n", this->registers.pc - 1, currentOp.opcode);
 	this->executeInstruction(currentOp.opcode);
@@ -648,6 +650,48 @@ void CPU::executeInstruction(Mnemonic opcode)
 		break;
 	case RST_1:
 		this->f_RST_n(1);
+		break;
+	case RET_NC:
+		this->f_RET_flag(C, false);
+		break;
+	case POP_DE:
+		this->f_POP(this->registers.de);
+		break;
+	case JP_NC_u16:
+		this->f_JP_flag(this->getU16Immediate(), C, false);
+		break;
+	case CALL_NC_u16:
+		this->f_CALL_flag(this->getU16Immediate(), C, false);
+		break;
+	case PUSH_DE:
+		this->f_PUSH(this->registers.de);
+		break;
+	case SUB_u8:
+		this->f_SUB(this->getU8Immediate());
+		break;
+	case RST_2:
+		this->f_RST_n(2);
+		break;
+	case RET_C:
+		this->f_RET_flag(C, true);
+		break;
+	case RETI:
+		//implement
+		break;
+	case JP_C_u16:
+		this->f_JP_flag(this->getU16Immediate(), C, true);
+		break;
+	case CALL_C_u16:
+		this->f_CALL_flag(this->getU16Immediate(), C, true);
+		break;
+	case SBC_A_u8:
+		this->f_SBC(this->getU8Immediate());
+		break;
+	case RST_3:
+		this->f_RST_n(3);
+		break;
+	default:
+		this->f_ILLEGAL_OP(opcode);
 		break;
 	}
 }

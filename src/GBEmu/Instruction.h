@@ -199,7 +199,6 @@ enum Mnemonic
 	CP_L, // Perform a subtraction to compare value of L with A. Update flags, do not store result.
 	CP_ptrHL, // Perform a subtraction to compare value in ram pointed to by HL with A. Update flags, do not store result.
 	CP_A, // Perform a subtraction to compare value of A with A. Update flags, do not store result.
-
 	RET_NZ, // Perform a RET if the Z flag is not set.
 	POP_BC, // Pop the contents from the memory stack into BC.
 	JP_NZ_u16, // Jump to address specified by u16 immediate data if the Z flag is not set.
@@ -207,17 +206,32 @@ enum Mnemonic
 	CALL_NZ_u16, // If the Z flag is not set, Push the address of the following instruction to the stack, jump to the address specified by the passed u16 immediate data.
 	PUSH_BC, // Push the value of BC to the memory stack. Decrement SP by 2.
 	ADD_A_u8, // Read one byte of immediate data. Add its value to the accumulator. Store result in the accumulator
-
 	RST_0, // Push PC to the stack, load address 0x0000 into PC
 	RET_Z, // Perform a RET if the Z flag is set
 	RET, // POP from the stack into the PC register
 	JP_Z_u16, // Read two bytes of immediate data. If the Z flag is set, jump to the address represented by those data.
-	CB_OFFSET, // Opcode 0xCB is the offset for the second opcode table.
-	
+	CB_OFFSET, // Opcode 0xCB is the offset for the second opcode table.	
 	CALL_Z_u16, // If the Z flag is set, Push the address of the following instruction to the stack, jump to the address specified by the passed u16 immediate data.
 	CALL_u16, // Push the address of the following instruction to the stack, jump to the address specified by the passed u16 immediate data.
 	ADC_A_u8, // Read one byte of immediate data. Perform an ADD with Carry with the value in the accumulator. Store result in accumulator.
 	RST_1, // Push PC to the stack, load address 0x0008 into PC.
+
+	RET_NC, // Perform a RET if the C flag is not set
+	POP_DE, // POP from the stack into the DE register
+	JP_NC_u16, // Jump to the address specified by u16 immediate data if the C flag is not set
+	ILLEGAL, // Illegal operation
+	CALL_NC_u16, // Push the address of the following instruction to the stack, jump to the address specified by the passed u16 immediate data if the C flag is not set.
+	PUSH_DE, // Push the contents of DE onto the stack
+	SUB_u8, // Read one byte of immediate data, and subtract its value from that of the accumulator. Store result in the accumulator.
+	RST_2, // Push PC to the stack, load address 0x0010 into PC
+	RET_C, // Perform a RET if the C flag is set
+	RETI, // Used by interrupt-service routines. Resets the master interrupt enable flag
+	JP_C_u16, // Jump to the address specified by u16 immediate data if the C flag is set
+	ILLEGAL, // Illegal operation
+	CALL_C_u16, // If the C flag is set, Push the address of the following instruction to the stack, jump to the address specified by the passed u16 immediate data.
+	ILLEGAL,
+	SBC_A_u8, // Read one byte of immediate data, subtract it (with carry) from the value in accumulator. Store result in accumulator.
+	RST_3, // Push PC to the stack, load address 0x0018 into PC
 };
 
 class Instruction
