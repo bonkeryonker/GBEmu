@@ -225,7 +225,7 @@ enum Mnemonic
 	SUB_u8, // Read one byte of immediate data, and subtract its value from that of the accumulator. Store result in the accumulator.
 	RST_2, // Push PC to the stack, load address 0x0010 into PC
 	RET_C, // Perform a RET if the C flag is set
-	RETI, // Used by interrupt-service routines. Resets the master interrupt enable flag
+	RETI, // Used by interrupt-service routines. Resets the master interrupt enable flag. Identical to EI followed by RET.
 	JP_C_u16, // Jump to the address specified by u16 immediate data if the C flag is set
 	ILLEGAL_1, // Illegal operation
 	CALL_C_u16, // If the C flag is set, Push the address of the following instruction to the stack, jump to the address specified by the passed u16 immediate data.

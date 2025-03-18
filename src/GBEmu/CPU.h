@@ -38,6 +38,10 @@ private:
 	// Set to true if STOP or HALT operation is executed.
 	bool m_isHalted;
 
+	// Master interrupt enable flag.
+	// Set to false in CPU constructor.
+	bool m_IME;
+
 	// A counter to keep track of the current count of objects on the stack.
 	// Used for debugging purposes.
 	u8 m_stackSizeCounter;
@@ -54,6 +58,9 @@ private:
 	// Returns: u16 pointed at by PC. Increments PC by 2
 	u16 getU16Immediate();
 
+	// IME getters and setters
+	inline void setIME(bool value) { this->m_IME = value; }
+	inline bool getIME() { return this->m_IME; }
 
 	/* Opcode Functions implemented in CPU_OpcodeFuncs.cpp */
 	

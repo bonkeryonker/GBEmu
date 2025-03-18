@@ -3,6 +3,8 @@
 CPU::CPU(std::shared_ptr<Memory>& ram)
 {
 	this->m_isHalted = false;
+	this->m_IME = false; // IME begins unset
+	this->m_stackSizeCounter = 0;
 	// Initialize SP to high ram (0xFFFE) and PC to beginning of header (0x0100)
 	this->registers.setDefaultValues();
 	this->m_ram_ptr = ram;
@@ -676,7 +678,8 @@ void CPU::executeInstruction(Mnemonic opcode)
 		this->f_RET_flag(C, true);
 		break;
 	case RETI:
-		//implement
+		this->setIME(true);
+		this->f_RET();
 		break;
 	case JP_C_u16:
 		this->f_JP_flag(this->getU16Immediate(), C, true);
@@ -733,7 +736,7 @@ void CPU::executeInstruction(Mnemonic opcode)
 		this->f_LD(this->registers.a, this->m_ram_ptr->getItem(0xFF00 | this->registers.c));
 		break;
 	case DI:
-		//implement
+		this->setIME(false);
 		break;
 	case PUSH_AF:
 		this->f_PUSH(this->registers.af);
@@ -754,7 +757,7 @@ void CPU::executeInstruction(Mnemonic opcode)
 		this->f_LD(this->registers.a, this->m_ram_ptr->getItem(this->getU16Immediate()));
 		break;
 	case EI:
-		//implement
+		this->setIME(true);
 		break;
 	case CP_u8:
 		this->f_CP(this->getU8Immediate());
