@@ -690,7 +690,79 @@ void CPU::executeInstruction(Mnemonic opcode)
 	case RST_3:
 		this->f_RST_n(3);
 		break;
-	default:
+	case LD_ptrU8_A:
+		this->m_ram_ptr->setItem((0xFF00 | this->getU8Immediate()), this->registers.a);
+		break;
+	case POP_HL:
+		this->f_POP(this->registers.hl);
+		break;
+	case LD_ptrC_A:
+		this->m_ram_ptr->setItem((0xFF00 | this->registers.c), this->registers.a);
+		break;
+	case PUSH_HL:
+		this->f_PUSH(this->registers.hl);
+		break;
+	case AND_u8:
+		this->f_AND(this->getU8Immediate());
+		break;
+	case RST_4:
+		this->f_RST_n(4);
+		break;
+	case ADD_SP_s8:
+		this->f_ADDSP((int8_t)this->getU8Immediate()); // Cast to signed integer
+		break;
+	case JP_HL:
+		this->f_JP(this->registers.hl);
+		break;
+	case LD_ptrU16_A:
+		this->m_ram_ptr->setItem(this->getU16Immediate(), this->registers.a);
+		break;
+	case XOR_u8:
+		this->f_XOR(this->getU8Immediate());
+		break;
+	case RST_5:
+		this->f_RST_n(5);
+		break;
+	case LD_A_ptrU8:
+		this->f_LD(this->registers.a, this->m_ram_ptr->getItem(0xFF00 | this->getU8Immediate()));
+		break;
+	case POP_AF:
+		this->f_POP(this->registers.af);
+		break;
+	case LD_A_ptrC:
+		this->f_LD(this->registers.a, this->m_ram_ptr->getItem(0xFF00 | this->registers.c));
+		break;
+	case DI:
+		//implement
+		break;
+	case PUSH_AF:
+		this->f_PUSH(this->registers.af);
+		break;
+	case OR_u8:
+		this->f_OR(this->getU8Immediate());
+		break;
+	case RST_6:
+		this->f_RST_n(6);
+		break;
+	case LD_HL_SPaddU8:
+		this->f_ADDSP((int8_t)this->getU8Immediate(), this->registers.hl); // Cast to signed integer
+		break;
+	case LD_SP_HL:
+		this->f_LD(this->registers.sp, this->registers.hl);
+		break;
+	case LD_A_ptrU16:
+		this->f_LD(this->registers.a, this->m_ram_ptr->getItem(this->getU16Immediate()));
+		break;
+	case EI:
+		//implement
+		break;
+	case CP_u8:
+		this->f_CP(this->getU8Immediate());
+		break;
+	case RST_7:
+		this->f_RST_n(7);
+		break;
+	default: // Catch-all for any ILLEGAL_n opcodes
 		this->f_ILLEGAL_OP(opcode);
 		break;
 	}

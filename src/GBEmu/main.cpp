@@ -12,7 +12,7 @@ int main()
 	std::shared_ptr<Cartridge> cart_ptr = std::make_shared<Cartridge>();
 	printf("OK\n");
 	printf("Loading rom...");
-	cart_ptr->loadROM("../../bin/testROMs/testStack.gb");
+	cart_ptr->loadROM("../../bin/testROMs/testSPAdd2.gb");
 	printf("OK\n");
 	printf("Creating RAM...");
 	std::shared_ptr<Memory> ram_ptr = std::make_shared<Memory>(cart_ptr);

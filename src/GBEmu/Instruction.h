@@ -219,7 +219,7 @@ enum Mnemonic
 	RET_NC, // Perform a RET if the C flag is not set
 	POP_DE, // POP from the stack into the DE register
 	JP_NC_u16, // Jump to the address specified by u16 immediate data if the C flag is not set
-	ILLEGAL, // Illegal operation
+	ILLEGAL_0, // Illegal operation
 	CALL_NC_u16, // Push the address of the following instruction to the stack, jump to the address specified by the passed u16 immediate data if the C flag is not set.
 	PUSH_DE, // Push the contents of DE onto the stack
 	SUB_u8, // Read one byte of immediate data, and subtract its value from that of the accumulator. Store result in the accumulator.
@@ -227,11 +227,44 @@ enum Mnemonic
 	RET_C, // Perform a RET if the C flag is set
 	RETI, // Used by interrupt-service routines. Resets the master interrupt enable flag
 	JP_C_u16, // Jump to the address specified by u16 immediate data if the C flag is set
-	ILLEGAL, // Illegal operation
+	ILLEGAL_1, // Illegal operation
 	CALL_C_u16, // If the C flag is set, Push the address of the following instruction to the stack, jump to the address specified by the passed u16 immediate data.
-	ILLEGAL,
+	ILLEGAL_2, // Illegal operation
 	SBC_A_u8, // Read one byte of immediate data, subtract it (with carry) from the value in accumulator. Store result in accumulator.
-	RST_3, // Push PC to the stack, load address 0x0018 into PC
+	RST_3, // Push PC to the stack, load address 0x0018 into PC	
+	LD_ptrU8_A, // Load contents of A to internal ram port 0xFFnn, where nn is the passed u8 immediate
+	POP_HL, // Pop from the stack into the HL register
+	LD_ptrC_A, // Load contents of A into internal ram port 0xFFnn, where nn is the value of register C
+	ILLEGAL_3, // Illegal operation
+	ILLEGAL_4, // Illegal operation
+	PUSH_HL, // Push the contents of HL onto the stack
+	AND_u8, // Read one byte of immediate data, AND it with the contents of the accumulator, store results in the accumulator.
+	RST_4,
+	ADD_SP_s8, // Read one byte of immediate data (signed 8bit integer) and add it to SP. Store result in SP.
+	JP_HL, // Jump to the address specified by the contents of HL
+	LD_ptrU16_A, // Read two bytes of immediate data. Load contents of A to the address specified by that data.
+	ILLEGAL_5, // Illegal operation
+	ILLEGAL_6, // Illegal operation
+	ILLEGAL_7, // Illegal operation
+	XOR_u8, // Read one byte of immediate data, XOR it with the contents of the accumulator, store results in the accumulator.
+	RST_5,
+
+	LD_A_ptrU8, // Read one byte of immediate data. Load the value at address 0xFFnn, where nn is the value of the immediate data, into register A.
+	POP_AF, // Pop from the stack into the AF register
+	LD_A_ptrC, // Load the value at address 0xFFnn, where nn is the value of register C, into register A.
+	DI, // Reset the IME and prohibit maskable interrupts
+	ILLEGAL_8, // Illegal operation
+	PUSH_AF, // PUSH the value of AF to the memory stack
+	OR_u8, // Read one byte of immediate data, OR it with the value of accumulator, store result in accumulator.
+	RST_6,
+	LD_HL_SPaddU8, // Read one byte of immediate (signed 8bit integer) and add it to SP. Store result in HL.
+	LD_SP_HL, // Load the contents of HL into SP.
+	LD_A_ptrU16, // Read two bytes of immediate data, and load the value at its address in RAM into register A.
+	EI, // Enable interrupts
+	ILLEGAL_9, // Illegal operation
+	ILLEGAL_10, // Illegal operation
+	CP_u8, // Perform a subtraction to compare value of u8 immediate with A. Update flags, do not store result.
+	RST_7
 };
 
 class Instruction

@@ -76,6 +76,14 @@ private:
 	// Load one byte of immediate data to the address specified by the value of the passed register.
 	void f_LD_ptr_r16_u8(const u16& addrSrcReg, u8 data);
 
+	// Add the value of the passed signed 8-bit integer to the SP. Store result in SP.
+	// Flags: 0, 0, H, C
+	void f_ADDSP(const int8_t signedInt);
+
+	// Add the value of the passed signed 8-bit integer to the SP. Store result in destReg.
+	// Flags: 0, 0, H, C
+	void f_ADDSP(const int8_t signedInt, u16& destReg);
+
 	// Add two 16-bit registers together, saving the result to destReg
 	// Flags: -, 0, H, C
 	void f_ADD_r16_r16(u16& destReg, u16& srcReg);

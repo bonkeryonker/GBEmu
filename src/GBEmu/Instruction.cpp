@@ -210,11 +210,10 @@ const Instruction Instruction::opcodeLookup[] =
 	Instruction(CALL_u16, 3, 24),
 	Instruction(ADC_A_u8, 2, 8),
 	Instruction(RST_1, 1, 16),
-
 	Instruction(RET_NC, 1, 20), // Worst case scenario for timing(20 ticks if it must make the jump. 12 ticks if not). We'll have to manually override the timing if jump is made (f_RET_flag returns bool?)
 	Instruction(POP_DE, 1, 12),
 	Instruction(JP_NC_u16, 3, 16), // Worst case scenario for timing (16 ticks if it must make the jump. 12 ticks if not). We'll have to manually override the timing if jump is made (f_JP_flag returns bool?)
-	Instruction(ILLEGAL, 0, 0), // Illegal operation
+	Instruction(ILLEGAL_0, 0, 0), // Illegal operation
 	Instruction(CALL_NC_u16, 3, 24), // Worst case scenario for timing (24 ticks if it must make the jump. 12 ticks if not). We'll have to manually override the timing if jump is made (f_CALL_flag returns bool?)
 	Instruction(PUSH_DE, 1, 16),
 	Instruction(SUB_u8, 2, 8),
@@ -222,9 +221,42 @@ const Instruction Instruction::opcodeLookup[] =
 	Instruction(RET_C, 1, 20), // Worst case scenario for timing(20 ticks if it must make the jump. 12 ticks if not). We'll have to manually override the timing if jump is made (f_RET_flag returns bool?)
 	Instruction(RETI, 1, 20),
 	Instruction(JP_C_u16, 3, 16),
-	Instruction(ILLEGAL, 0, 0),
+	Instruction(ILLEGAL_1, 0, 0),
 	Instruction(CALL_C_u16, 3, 24), // Worst case scenario for timing (24 ticks if it must make the jump. 12 ticks if not). We'll have to manually override the timing if jump is made (f_CALL_flag returns bool?)
-	Instruction(ILLEGAL, 0, 0),
+	Instruction(ILLEGAL_2, 0, 0),
 	Instruction(SBC_A_u8, 2, 8),
 	Instruction(RST_3, 1, 16),
+
+	Instruction(LD_ptrU8_A, 2, 12),
+	Instruction(POP_HL, 1, 12),
+	Instruction(LD_ptrC_A, 1, 8),
+	Instruction(ILLEGAL_3, 0, 0),
+	Instruction(ILLEGAL_4, 0, 0),
+	Instruction(PUSH_HL, 1, 16),
+	Instruction(AND_u8, 2, 8),
+	Instruction(RST_4, 1, 16),
+	Instruction(ADD_SP_s8, 2, 16),
+	Instruction(JP_HL, 1, 4),
+	Instruction(LD_ptrU16_A, 3, 16),
+	Instruction(ILLEGAL_5, 0, 0),
+	Instruction(ILLEGAL_6, 0, 0),
+	Instruction(ILLEGAL_7, 0, 0),
+	Instruction(XOR_u8, 2, 8),
+	Instruction(RST_5, 1, 16),
+
+	Instruction(LD_A_ptrU8, 2, 12),
+	Instruction(POP_AF, 1, 12),
+	Instruction(LD_A_ptrC, 1, 8),
+	Instruction(DI, 1, 4),
+	Instruction(ILLEGAL_8, 0, 0),
+	Instruction(PUSH_AF, 1, 16),
+	Instruction(OR_u8, 2, 8),
+	Instruction(RST_6, 1, 16),
+	Instruction(LD_HL_SPaddU8, 2, 12),
+	Instruction(LD_SP_HL, 1, 8),
+	Instruction(LD_A_ptrU16, 3, 16),
+	Instruction(EI, 1, 4),
+	Instruction(ILLEGAL_9, 0, 0),
+	Instruction(ILLEGAL_10, 0, 0),
+	Instruction(RST_7, 1, 16)
 };

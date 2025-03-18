@@ -57,6 +57,38 @@ void CPU::f_ADD_r16_r16(u16& destReg, u16& srcReg)
 	this->registers.setFlag(C, carry);
 }
 
+void CPU::f_ADDSP(const int8_t signedInt)
+{
+	u16& spRef = this->registers.sp;
+	
+	// reg & 0x0F extracts lower nibble of byte
+	// Check if 8bit half carry
+	bool halfcarry = ((spRef & 0x0F) + (signedInt & 0x0F)) > 0x0F;
+	bool carry = ((spRef & 0xFF) + (signedInt & 0xFF) > 0xFF);
+
+	this->registers.sp += signedInt;
+
+	this->registers.setFlag(Z | N, false);
+	this->registers.setFlag(H, halfcarry);
+	this->registers.setFlag(C, carry);
+}
+
+void CPU::f_ADDSP(const int8_t signedInt, u16& destReg)
+{
+	u16& spRef = this->registers.sp;
+
+	// reg & 0x0F extracts lower nibble of byte
+	// Check if 8bit half carry
+	bool halfcarry = ((spRef & 0x0F) + (signedInt & 0x0F)) > 0x0F;
+	bool carry = ((spRef & 0xFF) + (signedInt & 0xFF) > 0xFF);
+
+	destReg = this->registers.sp + signedInt;
+
+	this->registers.setFlag(Z | N, false);
+	this->registers.setFlag(H, halfcarry);
+	this->registers.setFlag(C, carry);
+}
+
 void CPU::f_ADD(const u8 srcReg)
 {
 	u8& regA = this->registers.a; // reference to accumulator register
