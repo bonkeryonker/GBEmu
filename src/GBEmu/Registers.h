@@ -76,12 +76,18 @@ struct REGISTERS {
 
 	void printAsHex()
 	{
-		printf("%02X %02X\n", a, f);
-		printf("%02X %02X\n", b, c);
-		printf("%02X %02X\n", d, e);
-		printf("%02X %02X\n", h, l);
-		printf("%04X\n", sp);
-		printf("%04X\n", pc);
+		printf("Registers:\n");
+		printf("\tBC: $%02X%02X\n", b, c);
+		printf("\tDE: $%02X%02X\n", d, e);
+		printf("\tHL: $%02X%02X\n", h, l);
+		printf("\tAF: $%02X%02X\n", a, f);
+		printf("\tSP: $%04X\n", sp);
+		printf("\tPC: $%04X\n", pc);
+		printf("\tFlags: %c %c %c %c\n",
+			isFlagSet(Z) ? 'Z' : '-',
+			isFlagSet(N) ? 'N' : '-',
+			isFlagSet(H) ? 'H' : '-',
+			isFlagSet(C) ? 'C' : '-');
 	}
 
 	void setDefaultValues()
@@ -90,8 +96,8 @@ struct REGISTERS {
 		bc = 0x0000;
 		de = 0x0000;
 		hl = 0x0000;
-		sp = 0x0000;
-		pc = 0x0000;
+		sp = 0xFFFE; // Typically where the SP begins
+		pc = 0x0100; // Skip bootrom, start execution at beginning of header
 	}
 };
 

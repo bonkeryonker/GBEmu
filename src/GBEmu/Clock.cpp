@@ -20,11 +20,17 @@ void Clock::tick(CPU& cpuRef)
 	// Calculate remaining time to sleep
 	auto sleepTime = (std::chrono::nanoseconds(static_cast<int>(M_CYCLE_NS)) * operationCycleCount) - elapsed;
 
-#if defined _DEBUG || defined _TEST
-	//printf("Func took %lld ns, sleeping for the remaining %lld ns\n", elapsed.count(), sleepTime.count());
+#ifdef CLOCK_TRACE
+	printf("Func took %lld ns, sleeping for the remaining %lld ns\n", elapsed.count(), sleepTime.count());
 #endif
 	if (sleepTime.count() > 0)
 	{
 		std::this_thread::sleep_for(sleepTime);
+	}
+	else
+	{
+#ifdef _DEBUG
+		printf("Overran clock by %lld ns!\n(Took: %lld ns)\n", -1 * sleepTime.count(), elapsed.count());
+#endif
 	}
 }

@@ -69,6 +69,7 @@ enum Mnemonic
 	LD_A_u8, // Load one byte of immediate data into A
 	CCF, // Flip the carry flag
 
+	/* General Load Instructions */
 	LD_B_B, // Opcode 0x40
 	LD_B_C,
 	LD_B_D,
@@ -85,7 +86,6 @@ enum Mnemonic
 	LD_C_L,
 	LD_C_ptrHL, // Load the contents of memory specified by the contents of HL into C register
 	LD_C_A,
-
 	LD_D_B, // Opcode 0x50
 	LD_D_C,
 	LD_D_D,
@@ -102,6 +102,169 @@ enum Mnemonic
 	LD_E_L,
 	LD_E_ptrHL,
 	LD_E_A,
+	LD_H_B, // Opcode 0x60
+	LD_H_C,
+	LD_H_D,
+	LD_H_E,
+	LD_H_H,
+	LD_H_L,
+	LD_H_ptrHL,
+	LD_H_A,
+	LD_L_B,
+	LD_L_C,
+	LD_L_D,
+	LD_L_E,
+	LD_L_H,
+	LD_L_L,
+	LD_L_ptrHL,
+	LD_L_A,
+	LD_ptrHL_B, // Opcode 0x70
+	LD_ptrHL_C,
+	LD_ptrHL_D,
+	LD_ptrHL_E,
+	LD_ptrHL_H,
+	LD_ptrHL_L,
+	HALT, // Stop system clock. Cancelled by interrupt or reset signal
+	LD_ptrHL_A,
+	LD_A_B,
+	LD_A_C,
+	LD_A_D,
+	LD_A_E,
+	LD_A_H,
+	LD_A_L,
+	LD_A_ptrHL,
+	LD_A_A,
+	/* ALU Operations */
+	ADD_A_B,
+	ADD_A_C,
+	ADD_A_D,
+	ADD_A_E,
+	ADD_A_H,
+	ADD_A_L,
+	ADD_A_ptrHL,
+	ADD_A_A,
+	ADC_A_B,
+	ADC_A_C,
+	ADC_A_D,
+	ADC_A_E,
+	ADC_A_H,
+	ADC_A_L,
+	ADC_A_ptrHL,
+	ADC_A_A,
+	SUB_B,
+	SUB_C,
+	SUB_D,
+	SUB_E,
+	SUB_H,
+	SUB_L,
+	SUB_ptrHL,
+	SUB_A,
+	SBC_A_B,
+	SBC_A_C,
+	SBC_A_D,
+	SBC_A_E,
+	SBC_A_H,
+	SBC_A_L,
+	SBC_A_ptrHL,
+	SBC_A_A,
+	AND_B,
+	AND_C,
+	AND_D,
+	AND_E,
+	AND_H,
+	AND_L,
+	AND_ptrHL,
+	AND_A,
+	XOR_B,
+	XOR_C,
+	XOR_D,
+	XOR_E,
+	XOR_H,
+	XOR_L,
+	XOR_ptrHL,
+	XOR_A,
+	OR_B,
+	OR_C,
+	OR_D,
+	OR_E,
+	OR_H,
+	OR_L,
+	OR_ptrHL,
+	OR_A,
+	CP_B, // Perform a subtraction to compare value of B with A. Update flags, do not store result.
+	CP_C, // Perform a subtraction to compare value of C with A. Update flags, do not store result.
+	CP_D, // Perform a subtraction to compare value of D with A. Update flags, do not store result.
+	CP_E, // Perform a subtraction to compare value of E with A. Update flags, do not store result.
+	CP_H, // Perform a subtraction to compare value of H with A. Update flags, do not store result.
+	CP_L, // Perform a subtraction to compare value of L with A. Update flags, do not store result.
+	CP_ptrHL, // Perform a subtraction to compare value in ram pointed to by HL with A. Update flags, do not store result.
+	CP_A, // Perform a subtraction to compare value of A with A. Update flags, do not store result.
+	RET_NZ, // Perform a RET if the Z flag is not set.
+	POP_BC, // Pop the contents from the memory stack into BC.
+	JP_NZ_u16, // Jump to address specified by u16 immediate data if the Z flag is not set.
+	JP_u16, // Jump to the address specified by u16 immediate data.
+	CALL_NZ_u16, // If the Z flag is not set, Push the address of the following instruction to the stack, jump to the address specified by the passed u16 immediate data.
+	PUSH_BC, // Push the value of BC to the memory stack. Decrement SP by 2.
+	ADD_A_u8, // Read one byte of immediate data. Add its value to the accumulator. Store result in the accumulator
+	RST_0, // Push PC to the stack, load address 0x0000 into PC
+	RET_Z, // Perform a RET if the Z flag is set
+	RET, // POP from the stack into the PC register
+	JP_Z_u16, // Read two bytes of immediate data. If the Z flag is set, jump to the address represented by those data.
+	CB_OFFSET, // Opcode 0xCB is the offset for the second opcode table.	
+	CALL_Z_u16, // If the Z flag is set, Push the address of the following instruction to the stack, jump to the address specified by the passed u16 immediate data.
+	CALL_u16, // Push the address of the following instruction to the stack, jump to the address specified by the passed u16 immediate data.
+	ADC_A_u8, // Read one byte of immediate data. Perform an ADD with Carry with the value in the accumulator. Store result in accumulator.
+	RST_1, // Push PC to the stack, load address 0x0008 into PC.
+
+	RET_NC, // Perform a RET if the C flag is not set
+	POP_DE, // POP from the stack into the DE register
+	JP_NC_u16, // Jump to the address specified by u16 immediate data if the C flag is not set
+	ILLEGAL_0, // Illegal operation
+	CALL_NC_u16, // Push the address of the following instruction to the stack, jump to the address specified by the passed u16 immediate data if the C flag is not set.
+	PUSH_DE, // Push the contents of DE onto the stack
+	SUB_u8, // Read one byte of immediate data, and subtract its value from that of the accumulator. Store result in the accumulator.
+	RST_2, // Push PC to the stack, load address 0x0010 into PC
+	RET_C, // Perform a RET if the C flag is set
+	RETI, // Used by interrupt-service routines. Resets the master interrupt enable flag. Identical to EI followed by RET.
+	JP_C_u16, // Jump to the address specified by u16 immediate data if the C flag is set
+	ILLEGAL_1, // Illegal operation
+	CALL_C_u16, // If the C flag is set, Push the address of the following instruction to the stack, jump to the address specified by the passed u16 immediate data.
+	ILLEGAL_2, // Illegal operation
+	SBC_A_u8, // Read one byte of immediate data, subtract it (with carry) from the value in accumulator. Store result in accumulator.
+	RST_3, // Push PC to the stack, load address 0x0018 into PC	
+	LD_ptrU8_A, // Load contents of A to internal ram port 0xFFnn, where nn is the passed u8 immediate
+	POP_HL, // Pop from the stack into the HL register
+	LD_ptrC_A, // Load contents of A into internal ram port 0xFFnn, where nn is the value of register C
+	ILLEGAL_3, // Illegal operation
+	ILLEGAL_4, // Illegal operation
+	PUSH_HL, // Push the contents of HL onto the stack
+	AND_u8, // Read one byte of immediate data, AND it with the contents of the accumulator, store results in the accumulator.
+	RST_4,
+	ADD_SP_s8, // Read one byte of immediate data (signed 8bit integer) and add it to SP. Store result in SP.
+	JP_HL, // Jump to the address specified by the contents of HL
+	LD_ptrU16_A, // Read two bytes of immediate data. Load contents of A to the address specified by that data.
+	ILLEGAL_5, // Illegal operation
+	ILLEGAL_6, // Illegal operation
+	ILLEGAL_7, // Illegal operation
+	XOR_u8, // Read one byte of immediate data, XOR it with the contents of the accumulator, store results in the accumulator.
+	RST_5,
+
+	LD_A_ptrU8, // Read one byte of immediate data. Load the value at address 0xFFnn, where nn is the value of the immediate data, into register A.
+	POP_AF, // Pop from the stack into the AF register
+	LD_A_ptrC, // Load the value at address 0xFFnn, where nn is the value of register C, into register A.
+	DI, // Reset the IME and prohibit maskable interrupts
+	ILLEGAL_8, // Illegal operation
+	PUSH_AF, // PUSH the value of AF to the memory stack
+	OR_u8, // Read one byte of immediate data, OR it with the value of accumulator, store result in accumulator.
+	RST_6,
+	LD_HL_SPaddU8, // Read one byte of immediate (signed 8bit integer) and add it to SP. Store result in HL.
+	LD_SP_HL, // Load the contents of HL into SP.
+	LD_A_ptrU16, // Read two bytes of immediate data, and load the value at its address in RAM into register A.
+	EI, // Enable interrupts
+	ILLEGAL_9, // Illegal operation
+	ILLEGAL_10, // Illegal operation
+	CP_u8, // Perform a subtraction to compare value of u8 immediate with A. Update flags, do not store result.
+	RST_7
 };
 
 class Instruction
