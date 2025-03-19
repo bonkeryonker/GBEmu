@@ -28,7 +28,7 @@ enum Mnemonic
 	DEC_D, // Decrement D register.
 	LD_D_u8, // Load one byte of immediate data into D
 	RLA, // Bitshift left, A0 gaining the value of whatever's in the carry flag. A7 saved to CY flag.
-	JR_u8, // Read one byte of immediate data, add its value to the PC (Jump n steps forward).
+	JR_s8, // Read one byte of immediate data, add its value to the PC (Jump n steps forward).
 	ADD_HL_DE, // Add the values of the HL and DE registers together and store the result into the HL register	
 	LD_A_ptrDE, // Load the 8bit contents of memory specified by DE into register A
 	DEC_DE, // Decrement DE register.

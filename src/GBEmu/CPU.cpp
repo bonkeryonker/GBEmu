@@ -12,12 +12,68 @@ CPU::CPU(std::shared_ptr<Memory>& ram)
 
 unsigned short CPU::tick()
 {	
-	// TODO: Check and update interrupts
-	// (https://www.reddit.com/r/EmuDev/comments/1hgupxq/gameboy_interrupts/)
+	// Handle interrupts before fetch
+	u8 pendingInterrupts;
+	if (this->getIME() && (pendingInterrupts = this->getPendingInterrupts()) != 0) // if IME is set and there is an enabled interrupt pending
+	{
+		// Disable IME. Will re-enable upon RETI
+		this->setIME(false);
+
+		Interrupt highestInterrupt = this->getHighestInterrupt(pendingInterrupts);
+		ISR highestInterruptISR = this->getISR(highestInterrupt);
+#ifdef _DEBUG
+		printf("Calling ISR: %04X\n", (u16)highestInterruptISR);
+#endif
+		this->f_CALL(highestInterruptISR);
+		
+		// Reset IF for highestInterrupt
+		this->setInterruptFlag(highestInterrupt, false);
+	}
 	Instruction currentOp = Instruction::opcodeLookup[this->fetch()];
-	printf("%04X : %02X\n", this->registers.pc - 1, currentOp.opcode);
 	this->executeInstruction(currentOp.opcode);
 	return currentOp.timing;
+}
+
+void CPU::setInterruptFlag(Interrupt interrupt, bool setTrue)
+{
+	u8 IFRegValue = this->m_ram_ptr->getItem(MemoryMap::IF);
+	if (setTrue)
+		IFRegValue |= interrupt;
+	else
+		IFRegValue &= ~interrupt;
+
+	this->m_ram_ptr->setItem(MemoryMap::IF, IFRegValue);		
+}
+
+Interrupt CPU::getHighestInterrupt(u8 pendingInterrupts)
+{
+	if (JOYPAD & pendingInterrupts)
+		return JOYPAD;
+	if (SERIAL & pendingInterrupts)
+		return SERIAL;
+	if (TIMER & pendingInterrupts)
+		return TIMER;
+	if (LCDSTAT & pendingInterrupts)
+		return LCDSTAT;
+	if (VBLANK & pendingInterrupts)
+		return VBLANK;
+}
+
+ISR CPU::getISR(Interrupt highestInterrupt)
+{
+	switch (highestInterrupt)
+	{
+	case JOYPAD:
+		return JOYPAD_ISR;
+	case SERIAL:
+		return SERIAL_ISR;
+	case TIMER:
+		return TIMER_ISR;
+	case LCDSTAT:
+		return LCDSTAT_ISR;
+	case VBLANK:
+		return VBLANK_ISR;
+	}
 }
 
 void CPU::executeInstruction(Mnemonic opcode)
@@ -96,8 +152,8 @@ void CPU::executeInstruction(Mnemonic opcode)
 	case RLA:
 		this->f_RLA();
 		break;
-	case JR_u8:
-		this->f_JR_u8(this->getU8Immediate());
+	case JR_s8:
+		this->f_JR_s8((int8_t)this->getU8Immediate()); // cast to signed int
 		break;
 	case ADD_HL_DE:
 		this->f_ADD_r16_r16(this->registers.hl, this->registers.de);
@@ -121,7 +177,7 @@ void CPU::executeInstruction(Mnemonic opcode)
 		this->f_RRA();
 		break;
 	case JR_NZ:
-		this->f_JR_flag(this->getU8Immediate(), Z, false);
+		this->f_JR_flag((int8_t)this->getU8Immediate(), Z, false);
 		break;
 	case LD_HL_u16:
 		this->f_LD(this->registers.hl, this->getU16Immediate());
@@ -146,7 +202,7 @@ void CPU::executeInstruction(Mnemonic opcode)
 		this->f_DAA();
 		break;
 	case JR_Z:
-		this->f_JR_flag(this->getU8Immediate(), Z);
+		this->f_JR_flag((int8_t)this->getU8Immediate(), Z);
 		break;
 	case ADD_HL_HL:
 		this->f_ADD_r16_r16(this->registers.hl, this->registers.hl);
@@ -171,7 +227,7 @@ void CPU::executeInstruction(Mnemonic opcode)
 		this->f_CPL();
 		break;
 	case JR_NC:
-		this->f_JR_flag(this->getU8Immediate(), C, false);
+		this->f_JR_flag((int8_t)this->getU8Immediate(), C, false);
 		break;
 	case LD_SP_u16:
 		this->f_LD(this->registers.sp, this->getU16Immediate());
@@ -197,7 +253,7 @@ void CPU::executeInstruction(Mnemonic opcode)
 		this->registers.setFlag(N | H, false);
 		break;
 	case JR_C:
-		this->f_JR_flag(this->getU8Immediate(), C);
+		this->f_JR_flag((int8_t)this->getU8Immediate(), C);
 		break;
 	case ADD_HL_SP:
 		this->f_ADD_r16_r16(this->registers.hl, this->registers.sp);

@@ -5,6 +5,25 @@
 #include "Registers.h"
 #include "Memory.h"
 #include "Instruction.h"
+
+enum ISR
+{
+	VBLANK_ISR = 0x0040, // VBLANK ISR address
+	LCDSTAT_ISR = 0x0048, // LCDSTAT ISR address
+	TIMER_ISR = 0x0050, // TIMER ISR address
+	SERIAL_ISR = 0x0058, // SERIAL ISR address
+	JOYPAD_ISR = 0x0060, // JOYPAD ISR address
+};
+
+enum Interrupt
+{
+	VBLANK = 0b00000001, // VBLANK IF flag bitmask
+	LCDSTAT = 0b00000010, // LCDSTAT IF flag bitmask
+	TIMER = 0b00000100, // TIMER IF flag bitmask
+	SERIAL = 0b00001000, // SERIAL IF flag bitmask
+	JOYPAD = 0b00010000, // JOYPAD IF flag bitmask
+};
+
 class CPU
 {
 	// We may need to rework the CPU class to better emulate real hardware when we implement interrupts.
@@ -29,8 +48,8 @@ public:
 		return this->m_isHalted;
 	};
 
-	// Fetch the opcode at PC, identical to getU8Immediate(registers.pc) 
-	u8 fetch();
+	// Set the corresponding bitflag for the interrupt to the value of the passed bool (TRUE by default)
+	void setInterruptFlag(Interrupt interrupt, bool setTrue=true);
 
 private:
 
@@ -49,6 +68,9 @@ private:
 	// Shared pointer to RAM object
 	std::shared_ptr<Memory> m_ram_ptr;
 
+	// Fetch the opcode at PC, identical to getU8Immediate(registers.pc) 
+	u8 fetch();
+
 	// Call the correct function for this specific opcode
 	void executeInstruction(Mnemonic opcode);
 
@@ -62,8 +84,18 @@ private:
 	inline void setIME(bool value) { this->m_IME = value; }
 	inline bool getIME() { return this->m_IME; }
 
+	// Check if there are any enabled interrupts pending in the IF register
+	// Returns: IF & IE
+	inline u8 getPendingInterrupts() { return (this->m_ram_ptr->getItem(MemoryMap::IF) & this->m_ram_ptr->getItem(MemoryMap::IE)); }
+
+	// Check the passed IF register and return the enum representing the highest priority interrupt
+	Interrupt getHighestInterrupt(u8 pendingInterrupts);
+
+	// Check the IF/IE registers and return highest priority interrupt ISR
+	ISR getISR(Interrupt highestInterrupt);
+
 	/* Opcode Functions implemented in CPU_OpcodeFuncs.cpp */
-	
+
 	// No operation, do nothing.
 	void f_NOP();
 
@@ -177,11 +209,11 @@ private:
 
 	// Read 1 byte of immediate data, and jump that many memory addresses forward.
 	// (PC += steps)
-	void f_JR_u8(u8 steps);
+	void f_JR_s8(int8_t steps);
 
 	// Read 1 byte of immediate data, and jump that many memory addresses forward if the flag matches jumpIfFlag boolean
 	// (PC += steps)
-	void f_JR_flag(u8 steps, u8 FLAG, bool jumpIfFlag = true);
+	void f_JR_flag(int8_t steps, u8 FLAG, bool jumpIfFlag = true);
 
 	// Read two bytes of immediate data, and jump to that memory address.
 	void f_JP(u16 destAddr);

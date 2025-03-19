@@ -90,12 +90,13 @@ struct REGISTERS {
 			isFlagSet(C) ? 'C' : '-');
 	}
 
+	// Set the internal registers to the values they'd be after executing the nintendo bootrom
 	void setDefaultValues()
 	{
-		af = 0x0000;
-		bc = 0x0000;
-		de = 0x0000;
-		hl = 0x0000;
+		af = 0x01B0;
+		bc = 0x0013;
+		de = 0x00D8;
+		hl = 0x014D;
 		sp = 0xFFFE; // Typically where the SP begins
 		pc = 0x0100; // Skip bootrom, start execution at beginning of header
 	}

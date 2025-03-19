@@ -146,6 +146,7 @@
     <ClCompile Include="Instruction.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Memory.cpp" />
+    <ClCompile Include="SerialDebug.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Cartridge.h" />
@@ -155,6 +156,7 @@
     <ClInclude Include="Instruction.h" />
     <ClInclude Include="Memory.h" />
     <ClInclude Include="Registers.h" />
+    <ClInclude Include="SerialDebug.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
