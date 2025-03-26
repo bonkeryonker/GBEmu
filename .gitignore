@@ -9,6 +9,7 @@
 *.user
 *.userosscache
 *.sln.docstates
+*.sln
 ram_dump.bin
 
 # User-specific files (MonoDevelop/Xamarin Studio)
@@ -123,7 +124,6 @@ ipch/
 # Visual Studio project files
 *.vcxproj
 *.vcxproj.filters
-*.sln
 
 # Visual Studio profiler
 *.psess
