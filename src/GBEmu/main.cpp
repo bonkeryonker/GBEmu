@@ -1,6 +1,7 @@
 #include <iostream> //printf
 #include <memory> // shared_ptr
 #include <string>
+#include "Graphics.h"
 #include "Clock.h"
 #include "Registers.h"
 #include "CPU.h"
@@ -8,47 +9,24 @@
 #include "Cartridge.h"
 #include "SerialDebug.h"
 
+// TODO: Make the library link/compile with cmake
+// https://www.glfw.org/docs/latest/build_guide.html
 int main()
 {
-	printf("Creating cartridge...");
-	std::shared_ptr<Cartridge> cart_ptr = std::make_shared<Cartridge>();
-	printf("OK\n");
-	printf("Loading rom...");
-	cart_ptr->loadROM("../../bin/testROMs/01-special.gb");
-	printf("OK\n");
-	printf("Creating RAM...");
-	std::shared_ptr<Memory> ram_ptr = std::make_shared<Memory>(cart_ptr);
-	printf("OK\n");
-	printf("Creating CPU...");
-	CPU c(ram_ptr);
-	printf("OK\n");
-	printf("Creating debug Serial Monitor...");
-	SerialDebug sd(ram_ptr);
-	printf("OK\n");
-	printf("Beginning execution...\n");
-	bool printRegisters = false;
-	while (!c.isHalted())
+	if (!graphicsInit())
 	{
-		if (c.registers.pc == 0xC36C)
-		{
-			system("cls");
-			printf("PC: 0xC36C\n");
-			printRegisters = true;
-		}
-
-		c.tick();
-		if (printRegisters)
-		{
-			c.registers.printAsHex();
-		}
+		printf("Aborting...\n");
+		return 1;
 	}
-	printf("\n");
+	GLFWwindow* mainWindow = glfwCreateWindow(LCD_WIDTH * 4, LCD_HEIGHT * 4, "GBEmu", NULL, NULL);
+	glfwSetWindowCloseCallback(mainWindow, windowCloseCallback_glfw);
+	glfwMakeContextCurrent(mainWindow);
 
-	//ram_ptr->setItem(IE, 0x1a);
-	// Finish up
-	printf("\n");
-	c.registers.printAsHex();
-	printf("\n\n");
-	ram_ptr->dumpMemoryToFile();
-	//cart_ptr->dumpRomToFile();
+	while (!glfwWindowShouldClose(mainWindow))
+	{
+		glfwSwapBuffers(mainWindow);
+		glfwPollEvents();
+	}
+
+	graphicsTerminate();
 }
