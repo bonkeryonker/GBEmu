@@ -8,14 +8,17 @@
 #include "Memory.h"
 #include "Cartridge.h"
 #include "SerialDebug.h"
+#include "Log.h"
 
-// TODO: Make the library link/compile with cmake
-// https://www.glfw.org/docs/latest/build_guide.html
+
 int main()
 {
+	Log::Init();
+	Log::SetLogLevel(Log::GetCoreLogger(), spdlog::level::level_enum::warn);
+	CORE_WARN("Logging initialized. Watch out, beavers!");
 	if (!graphicsInit())
 	{
-		printf("Aborting...\n");
+		CORE_FATAL("Aborting...");
 		return 1;
 	}
 	GLFWwindow* mainWindow = glfwCreateWindow(LCD_WIDTH * 4, LCD_HEIGHT * 4, "GBEmu", NULL, NULL);
@@ -29,4 +32,5 @@ int main()
 	}
 
 	graphicsTerminate();
+	CORE_WARN("Closing GBEmu.");
 }

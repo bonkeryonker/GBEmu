@@ -9,9 +9,7 @@ Cartridge::Cartridge()
 
 Cartridge::~Cartridge()
 {
-#ifdef _DEBUG
-	printf("Rom buffer deleted.\n");
-#endif
+	GB_WARN("ROM buffer deleted.");
 	delete[] this->romBuf;
 }
 
@@ -20,7 +18,7 @@ bool Cartridge::loadROM(const std::string& pathToRom)
 	std::ifstream romFile(pathToRom, std::ios::binary);
 	if (!romFile.is_open())
 	{
-		printf("Unable to open rom: %s for reading.\n", pathToRom.c_str());
+		GB_ERROR("Unable to open rom: {} for reading.", pathToRom.c_str());
 		return false;
 	}
 
@@ -42,14 +40,12 @@ bool Cartridge::dumpRomToFile(const std::string& filename)
 	std::ofstream outFile(filename, std::ios::binary);
 	if (!outFile)
 	{
-		printf("Unable to open file for writing\n");
+		GB_ERROR("Unable to open rom: {} for writing.", filename.c_str());
 		return false;
 	}
 	outFile.write(reinterpret_cast<const char*>(this->romBuf), MAX_CARTSIZE);
 	outFile.close();
-#ifdef _DEBUG
-	printf("ROM contents dumped to %s\n", filename.c_str());
-#endif
+	GB_INFO("ROM contents dumped to: {}", filename.c_str());
 	return true;
 }
 /*

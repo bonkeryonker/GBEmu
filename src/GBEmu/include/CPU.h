@@ -2,6 +2,7 @@
 #define CPU_H
 #include <stdio.h>
 #include <memory>
+#include "Globals.h"
 #include "Registers.h"
 #include "Memory.h"
 #include "Instruction.h"
