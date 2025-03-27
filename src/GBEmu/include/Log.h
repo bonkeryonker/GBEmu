@@ -16,7 +16,7 @@ public:
 
 	// Getters
 	inline static std::shared_ptr<spdlog::logger>& GetCoreLogger() { return s_CoreLogger; }
-	inline static std::shared_ptr<spdlog::logger>& GetCPULogger() { return s_GBLogger; }
+	inline static std::shared_ptr<spdlog::logger>& GetGBLogger() { return s_GBLogger; }
 
 private:
 	static std::shared_ptr<spdlog::logger> Log::s_CoreLogger;
@@ -30,9 +30,9 @@ private:
 #define CORE_INFO(...) Log::GetCoreLogger()->info(__VA_ARGS__)
 #define CORE_TRACE(...) Log::GetCoreLogger()->trace(__VA_ARGS__)
 
-#define GB_ERROR(...) Log::GetCPULogger()->error(__VA_ARGS__)
-#define GB_WARN(...) Log::GetCPULogger()->warn(__VA_ARGS__)
-#define GB_INFO(...) Log::GetCPULogger()->info(__VA_ARGS__)
-#define GB_TRACE(...) Log::GetCPULogger()->trace(__VA_ARGS__)
+#define GB_ERROR(...) Log::GetGBLogger()->error(__VA_ARGS__)
+#define GB_WARN(...) Log::GetGBLogger()->warn(__VA_ARGS__)
+#define GB_INFO(...) Log::GetGBLogger()->info(__VA_ARGS__)
+#define GB_TRACE(...) Log::GetGBLogger()->trace(__VA_ARGS__)
 
 #endif
