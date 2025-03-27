@@ -1,86 +1,89 @@
-cmake_minimum_required(VERSION 3.16.0 FATAL_ERROR)
+cmake_minimum_required(VERSION 3.28.3)
+project(GBEmu)
 
-set(CMAKE_SYSTEM_VERSION 10.0 CACHE STRING "" FORCE)
+# Disable predefined targets like ALL_BUILD and INSTALL
+set(CMAKE_DISABLE_PREDEFINED_TARGETS TRUE)
 
-project(GBEmu CXX)
-
-################################################################################
-# Set target arch type if empty. Visual studio solution generator provides it.
-################################################################################
-if(NOT CMAKE_VS_PLATFORM_NAME)
-    set(CMAKE_VS_PLATFORM_NAME "x64")
-endif()
-message("${CMAKE_VS_PLATFORM_NAME} architecture in use")
-
-if(NOT ("${CMAKE_VS_PLATFORM_NAME}" STREQUAL "x64"
-     OR "${CMAKE_VS_PLATFORM_NAME}" STREQUAL "x86"))
-    message(FATAL_ERROR "${CMAKE_VS_PLATFORM_NAME} arch is not supported!")
+# Visual Studio specific: Set GBEmu as the startup project
+if(MSVC)
+    set_property(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} 
+                 PROPERTY VS_STARTUP_PROJECT GBEmu)
 endif()
 
-################################################################################
-# Global configuration types
-################################################################################
-set(CMAKE_CONFIGURATION_TYPES
-    "Debug"
-    "Release"
-    CACHE STRING "" FORCE
+# Set the C++17 standard
+set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD_REQUIRED 17)
+
+# Define the source directory
+set(SRC_DIR ${CMAKE_SOURCE_DIR}/src/GBEmu)
+set(INCLUDE_DIR ${SRC_DIR}/include)
+
+# Specify source and header files
+set(SOURCES
+    ${SRC_DIR}/Cartridge.cpp 
+    ${SRC_DIR}/Clock.cpp
+    ${SRC_DIR}/CPU.cpp
+    ${SRC_DIR}/CPU_OpcodeFuncs.cpp
+    ${SRC_DIR}/Instruction.cpp
+    ${SRC_DIR}/main.cpp
+    ${SRC_DIR}/Memory.cpp
+    ${SRC_DIR}/SerialDebug.cpp
 )
 
-################################################################################
-# Global compiler options
-################################################################################
-if(MSVC)
-    # remove default flags provided with CMake for MSVC
-    set(CMAKE_CXX_FLAGS "")
-    set(CMAKE_CXX_FLAGS_DEBUG "")
-    set(CMAKE_CXX_FLAGS_RELEASE "")
+set(HEADERS
+    ${INCLUDE_DIR}/Cartridge.h
+    ${INCLUDE_DIR}/Clock.h
+    ${INCLUDE_DIR}/CPU.h
+    ${INCLUDE_DIR}/Globals.h
+    ${INCLUDE_DIR}/Graphics.h
+    ${INCLUDE_DIR}/Instruction.h
+    ${INCLUDE_DIR}/Memory.h
+    ${INCLUDE_DIR}/Registers.h
+    ${INCLUDE_DIR}/SerialDebug.h
+)
+
+# Include the header directory
+include_directories(${INCLUDE_DIR})
+
+# Set platform-specific settings
+if(WIN32)
+    message(STATUS "Building for windows")
+    set(PLATFORM_DIR "windows")
+elseif(UNIX)
+    message(STATUS "Building for linux")
+    set(PLATFORM_DIR "linux")
 endif()
 
-################################################################################
-# Global linker options
-################################################################################
-if(MSVC)
-    # remove default flags provided with CMake for MSVC
-    set(CMAKE_EXE_LINKER_FLAGS "")
-    set(CMAKE_MODULE_LINKER_FLAGS "")
-    set(CMAKE_SHARED_LINKER_FLAGS "")
-    set(CMAKE_STATIC_LINKER_FLAGS "")
-    set(CMAKE_EXE_LINKER_FLAGS_DEBUG "${CMAKE_EXE_LINKER_FLAGS}")
-    set(CMAKE_MODULE_LINKER_FLAGS_DEBUG "${CMAKE_MODULE_LINKER_FLAGS}")
-    set(CMAKE_SHARED_LINKER_FLAGS_DEBUG "${CMAKE_SHARED_LINKER_FLAGS}")
-    set(CMAKE_STATIC_LINKER_FLAGS_DEBUG "${CMAKE_STATIC_LINKER_FLAGS}")
-    set(CMAKE_EXE_LINKER_FLAGS_RELEASE "${CMAKE_EXE_LINKER_FLAGS}")
-    set(CMAKE_MODULE_LINKER_FLAGS_RELEASE "${CMAKE_MODULE_LINKER_FLAGS}")
-    set(CMAKE_SHARED_LINKER_FLAGS_RELEASE "${CMAKE_SHARED_LINKER_FLAGS}")
-    set(CMAKE_STATIC_LINKER_FLAGS_RELEASE "${CMAKE_STATIC_LINKER_FLAGS}")
+# Force GLFW to build as a static library
+set(GLFW_BUILD_SHARED OFF CACHE BOOL "Build GLFW as a static library" FORCE)
+
+# Add GLFW as a subdirectory to the build process
+add_subdirectory(vendor/glfw)
+
+# Define the executable
+add_executable(GBEmu ${SOURCES} ${HEADERS})
+
+# Link GLFW to GBEmu as a static library
+target_link_libraries(GBEmu PRIVATE glfw)
+
+# Set output directories for the executable
+set_target_properties(GBEmu PROPERTIES
+    RUNTIME_OUTPUT_DIRECTORY_DEBUG ${CMAKE_SOURCE_DIR}/bin/builds/${PLATFORM_DIR}/debug
+    RUNTIME_OUTPUT_DIRECTORY_RELEASE ${CMAKE_SOURCE_DIR}/bin/builds/${PLATFORM_DIR}/release
+    COMPILE_PDB_OUTPUT_DIRECTORY_DEBUG ${CMAKE_SOURCE_DIR}/bin/builds/${PLATFORM_DIR}/debug/obj
+    COMPILE_PDB_OUTPUT_DIRECTORY_RELEASE ${CMAKE_SOURCE_DIR}/bin/builds/${PLATFORM_DIR}/release/obj
+    OBJECT_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR}/bin/builds/${PLATFORM_DIR}/debug/obj
+)
+
+# Set build-specific settings
+if(CMAKE_BUILD_TYPE STREQUAL "Debug")
+    add_definitions(-D_DEBUG)
+    set(BUILD_TYPE_DIR "debug")
+elseif(CMAKE_BUILD_TYPE STREQUAL "Release")
+    add_definitions(-DNDEBUG)
+    set(BUILD_TYPE_DIR "release")
+else()
+    set(BUILD_TYPE_DIR "unknown")
 endif()
 
-################################################################################
-# Nuget packages function stub.
-################################################################################
-function(use_package TARGET PACKAGE VERSION)
-    message(WARNING "No implementation of use_package. Create yours. "
-                    "Package \"${PACKAGE}\" with version \"${VERSION}\" "
-                    "for target \"${TARGET}\" is ignored!")
-endfunction()
-
-################################################################################
-# Common utils
-################################################################################
-include(CMake/Utils.cmake)
-
-################################################################################
-# Additional Global Settings(add specific info there)
-################################################################################
-include(CMake/GlobalSettingsInclude.cmake OPTIONAL)
-
-################################################################################
-# Use solution folders feature
-################################################################################
-set_property(GLOBAL PROPERTY USE_FOLDERS ON)
-
-################################################################################
-# Sub-projects
-################################################################################
-add_subdirectory(src/GBEmu)
-
+set_property(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} PROPERTY VS_STARTUP_PROJECT GBEmu)

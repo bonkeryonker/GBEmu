@@ -41,10 +41,19 @@ enum MemoryMap
 	//Input/Output Registers
 	IO = 0xFF00,
 
+	// Serial byte (data, shifted in bit at a time over 8 serial clock cycles)
+	SB = 0xFF01,
+
+	//Serial control (Bit 7 set HIGH and SERIAL interrupt thrown when serial transfer complete)
+	SC = 0xFF02,
+
+	//Interrupt Flag Register (One byte in length, lower 5 bits)
+	IF = 0xFF0F,
+
 	//High RAM
 	HRAM = 0xFF80,
 
-	//Interrupt Enable Register (one byte in length)
+	//Interrupt Enable Register (One byte in length, lower 5 bits)
 	IE = 0xFFFF
 };
 

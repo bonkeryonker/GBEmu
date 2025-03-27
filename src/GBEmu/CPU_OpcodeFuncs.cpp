@@ -318,7 +318,7 @@ void CPU::f_HALT()
 	this->registers.pc++; // The system is halted at the operation after the halt instruction
 }
 
-void CPU::f_JR_u8(u8 steps)
+void CPU::f_JR_s8(int8_t steps)
 {
 	// The getU8Immediate() command used to fetch the steps variable increments PC by 1
 	// so we'll have to decrement it before we actually jump that amount. I'm not sure if
@@ -326,15 +326,12 @@ void CPU::f_JR_u8(u8 steps)
 	// work with actual ROMs.
 	//steps--;
 	this->registers.pc += steps;
-#ifdef _DEBUG
-	printf("Jumped to %04X\n", this->registers.pc);
-#endif
 }
 
-void CPU::f_JR_flag(u8 steps, u8 FLAG, bool jumpIfFlag)
+void CPU::f_JR_flag(int8_t steps, u8 FLAG, bool jumpIfFlag)
 {
 	if ((jumpIfFlag == this->registers.isFlagSet(FLAG)))
-		this->f_JR_u8(steps);
+		this->f_JR_s8(steps);
 	else //do nothing. PC will be incremented upon next fetch()
 	{
 #ifdef _DEBUG
@@ -346,9 +343,6 @@ void CPU::f_JR_flag(u8 steps, u8 FLAG, bool jumpIfFlag)
 void CPU::f_JP(u16 destAddr)
 {
 	this->registers.pc = destAddr;
-#ifdef _DEBUG
-	printf("Jumped to %04X\n", this->registers.pc);
-#endif
 }
 
 void CPU::f_JP_flag(u16 destAddr, u8 FLAG, bool jumpIfFlag)
