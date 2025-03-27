@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 4.0.0)
+cmake_minimum_required(VERSION 3.28.3)
 project(GBEmu)
 
 # Disable predefined targets like ALL_BUILD and INSTALL
@@ -45,6 +45,15 @@ set(HEADERS
 # Include the header directory
 include_directories(${INCLUDE_DIR})
 
+# Set platform-specific settings
+if(WIN32)
+    message(STATUS "Building for windows")
+    set(PLATFORM_DIR "windows")
+elseif(UNIX)
+    message(STATUS "Building for linux")
+    set(PLATFORM_DIR "linux")
+endif()
+
 # Force GLFW to build as a static library
 set(GLFW_BUILD_SHARED OFF CACHE BOOL "Build GLFW as a static library" FORCE)
 
@@ -56,15 +65,6 @@ add_executable(GBEmu ${SOURCES} ${HEADERS})
 
 # Link GLFW to GBEmu as a static library
 target_link_libraries(GBEmu PRIVATE glfw)
-
-# Set platform-specific settings
-if(WIN32)
-    message(STATUS "Building for windows")
-    set(PLATFORM_DIR "windows")
-elseif(UNIX)
-    message(STATUS "Building for linux")
-    set(PLATFORM_DIR "linux")
-endif()
 
 # Set output directories for the executable
 set_target_properties(GBEmu PROPERTIES
