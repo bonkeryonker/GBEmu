@@ -28,6 +28,7 @@ set(SOURCES
     ${SRC_DIR}/main.cpp
     ${SRC_DIR}/Memory.cpp
     ${SRC_DIR}/SerialDebug.cpp
+    ${SRC_DIR}/Log.cpp
 )
 
 set(HEADERS
@@ -40,6 +41,7 @@ set(HEADERS
     ${INCLUDE_DIR}/Memory.h
     ${INCLUDE_DIR}/Registers.h
     ${INCLUDE_DIR}/SerialDebug.h
+    ${INCLUDE_DIR}/Log.h
 )
 
 # Include the header directory
@@ -54,17 +56,19 @@ elseif(UNIX)
     set(PLATFORM_DIR "linux")
 endif()
 
+### GLFW
 # Force GLFW to build as a static library
 set(GLFW_BUILD_SHARED OFF CACHE BOOL "Build GLFW as a static library" FORCE)
-
 # Add GLFW as a subdirectory to the build process
 add_subdirectory(vendor/glfw)
-
 # Define the executable
 add_executable(GBEmu ${SOURCES} ${HEADERS})
-
 # Link GLFW to GBEmu as a static library
 target_link_libraries(GBEmu PRIVATE glfw)
+
+### SPDLog
+add_subdirectory(vendor/spdlog)
+target_link_libraries(GBEmu PRIVATE spdlog)
 
 # Set output directories for the executable
 set_target_properties(GBEmu PROPERTIES

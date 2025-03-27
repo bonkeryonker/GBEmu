@@ -10,9 +10,7 @@ Memory::Memory(std::shared_ptr<Cartridge>& cart_ptr)
 
 Memory::~Memory()
 {
-#ifdef _DEBUG
-	printf("Ram buffer deleted.\n");
-#endif
+	GB_WARN("Ram buffer deleted");
 	delete[] this->ramBuf;
 }
 
@@ -44,14 +42,13 @@ bool Memory::dumpMemoryToFile(const std::string& filename, bool dumpCartridge)
 	std::ofstream outFile(filename, streamFlags);
 	if (!outFile)
 	{
-		printf("Unable to open file for writing\n");
+		//printf("Unable to open file for writing\n");
+		GB_ERROR("Unable to open file: {} for writing!", filename.c_str());
 		return false;
 	}
 	outFile.write(reinterpret_cast<const char*>(this->ramBuf), RAM_SIZE);
 	outFile.close();
-#ifdef _DEBUG
-	printf("RAM contents dumped to %s\n", filename.c_str());
-#endif
+	GB_INFO("RAM contents dumped to {}", filename.c_str());
 	return true;
 }
 

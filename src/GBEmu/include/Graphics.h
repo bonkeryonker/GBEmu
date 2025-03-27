@@ -2,40 +2,41 @@
 #define GFX_H
 #include <iostream>
 #include <GLFW/glfw3.h>
+#include "Log.h"
 
 void errCallback_glfw(int error, const char* description)
 {
-	fprintf(stderr, "GLFW Error: %s\n", description);
+	/*fprintf(stderr, "GLFW Error: %s\n", description);*/
+	CORE_ERROR("GLFW Error: {}", description);
 }
 
 void windowCloseCallback_glfw(GLFWwindow* window)
 {
-	printf("Window closed with callback.\n");
+	/*printf("Window closed with callback.\n");*/
+	//spdlog::info("Window closed with callback.");
+	CORE_WARN("Window closed with callback.");
 	glfwDestroyWindow(window);
 }
 
 bool graphicsInit()
 {
-	printf("Initializing GLFW... ");
+	CORE_TRACE("Initializing GLFW...");
 	if (!glfwInit())
 	{
-		printf("Failed!\n");
+		CORE_FATAL("Failed to initialize GLFW!");
 		return false;
 	}
-	printf("OK.\n");
+	CORE_WARN("GLFW Initialized.");
 
-	printf("Setting window hints...");
+	// Set window hints
 	glfwWindowHint(GLFW_RESIZABLE, GLFW_FALSE);
-	printf("OK.\n");
-
 	return true;
 }
 
 void graphicsTerminate()
 {
-	printf("Terminating GLFW... ");
+	CORE_WARN("Terminating GLFW");
 	glfwTerminate();
-	printf("OK.\n");
 }
 
 #endif

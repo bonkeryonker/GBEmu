@@ -21,9 +21,8 @@ unsigned short CPU::tick()
 
 		Interrupt highestInterrupt = this->getHighestInterrupt(pendingInterrupts);
 		ISR highestInterruptISR = this->getISR(highestInterrupt);
-#ifdef _DEBUG
-		printf("Calling ISR: %04X\n", (u16)highestInterruptISR);
-#endif
+		GB_TRACE("Calling ISR: {}", (u16)highestInterruptISR);
+
 		this->f_CALL(highestInterruptISR);
 		
 		// Reset IF for highestInterrupt
