@@ -9,7 +9,7 @@
 *.user
 *.userosscache
 *.sln.docstates
-*.sln/
+*.sln
 ram_dump.bin
 
 # User-specific files (MonoDevelop/Xamarin Studio)
