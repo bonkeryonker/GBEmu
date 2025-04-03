@@ -56,15 +56,22 @@ elseif(UNIX)
     set(PLATFORM_DIR "linux")
 endif()
 
-### GLFW
-# Force GLFW to build as a static library
-set(GLFW_BUILD_SHARED OFF CACHE BOOL "Build GLFW as a static library" FORCE)
-# Add GLFW as a subdirectory to the build process
-add_subdirectory(vendor/glfw)
 # Define the executable
 add_executable(GBEmu ${SOURCES} ${HEADERS})
-# Link GLFW to GBEmu as a static library
-target_link_libraries(GBEmu PRIVATE glfw)
+
+### SDL2
+# Configure
+set(SDL2_BUILD_TESTS OFF CACHE BOOL "Disabling SDL2 tests" FORCE)
+set(SDL2_BUILD_EXAMPLES OFF CACHE BOOL "Disabling SDL2 examples" FORCE)
+set(SDL2_DISABLE_INSTALL TRUE CACHE BOOL "Disabling SDL2 install target" FORCE)
+set(SDL2_DISABLE_TEST TRUE CACHE BOOL "Disabling SDL2 test project" FORCE)
+set(SDL2_BUILD_SHARED OFF CACHE BOOL "Disabling SDL2 shared library" FORCE)
+set(SDL2_BUILD_STATIC ON CACHE BOOL "Enabling SDL2 static library" FORCE)
+# Add subdirectory
+add_subdirectory(vendor/SDL EXCLUDE_FROM_ALL)
+# Link to project
+target_link_libraries(GBEmu PRIVATE SDL2::SDL2main)
+target_link_libraries(GBEmu PRIVATE SDL2::SDL2-static)
 
 ### SPDLog
 add_subdirectory(vendor/spdlog)
@@ -90,4 +97,4 @@ else()
     set(BUILD_TYPE_DIR "unknown")
 endif()
 
-set_property(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} PROPERTY VS_STARTUP_PROJECT GBEmu)
+#set_property(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} PROPERTY VS_STARTUP_PROJECT GBEmu)

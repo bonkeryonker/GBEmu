@@ -2,7 +2,7 @@
 #define CLK_H
 #include <chrono>
 #include <thread>
-#include <iostream>
+//#include <iostream>
 #include <functional>
 #include "Globals.h"
 #include "CPU.h"

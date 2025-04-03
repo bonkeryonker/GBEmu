@@ -21,7 +21,7 @@ void Clock::tick(CPU& cpuRef)
 	auto sleepTime = (std::chrono::nanoseconds(static_cast<int>(M_CYCLE_NS)) * operationCycleCount) - elapsed;
 
 #ifdef CLOCK_TRACE
-	printf("Func took %lld ns, sleeping for the remaining %lld ns\n", elapsed.count(), sleepTime.count());
+	//printf("Func took %lld ns, sleeping for the remaining %lld ns\n", elapsed.count(), sleepTime.count());
 #endif
 	if (sleepTime.count() > 0)
 	{
@@ -30,7 +30,7 @@ void Clock::tick(CPU& cpuRef)
 	else
 	{
 #ifdef _DEBUG
-		printf("Overran clock by %lld ns!\n(Took: %lld ns)\n", -1 * sleepTime.count(), elapsed.count());
+		//printf("Overran clock by %lld ns!\n(Took: %lld ns)\n", -1 * sleepTime.count(), elapsed.count());
 #endif
 	}
 }
