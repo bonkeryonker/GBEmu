@@ -14,21 +14,26 @@ endif()
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED 17)
 
-# Define the source directory
+# Define the source directory paths
 set(SRC_DIR ${CMAKE_SOURCE_DIR}/src/GBEmu)
 set(INCLUDE_DIR ${SRC_DIR}/include)
+set(CORE ${SRC_DIR}/core)
+set(GB ${SRC_DIR}/gb)
 
 # Specify source and header files
 set(SOURCES
-    ${SRC_DIR}/Cartridge.cpp 
-    ${SRC_DIR}/Clock.cpp
-    ${SRC_DIR}/CPU.cpp
-    ${SRC_DIR}/CPU_OpcodeFuncs.cpp
-    ${SRC_DIR}/Instruction.cpp
+    ${GB}/Cartridge.cpp 
+    ${GB}/Clock.cpp
+    ${GB}/CPU.cpp
+    ${GB}/CPU_OpcodeFuncs.cpp
+    ${GB}/Instruction.cpp
+    ${GB}/Memory.cpp
+    ${GB}/SerialDebug.cpp
+    #${GB}/PPU.cpp
+    ${CORE}/Log.cpp
+    ${CORE}/LCD.cpp
     ${SRC_DIR}/main.cpp
-    ${SRC_DIR}/Memory.cpp
-    ${SRC_DIR}/SerialDebug.cpp
-    ${SRC_DIR}/Log.cpp
+
 )
 
 set(HEADERS
@@ -36,12 +41,14 @@ set(HEADERS
     ${INCLUDE_DIR}/Clock.h
     ${INCLUDE_DIR}/CPU.h
     ${INCLUDE_DIR}/Globals.h
-    ${INCLUDE_DIR}/Graphics.h
+    ${INCLUDE_DIR}/LCD.h
     ${INCLUDE_DIR}/Instruction.h
     ${INCLUDE_DIR}/Memory.h
     ${INCLUDE_DIR}/Registers.h
     ${INCLUDE_DIR}/SerialDebug.h
     ${INCLUDE_DIR}/Log.h
+    ${INCLUDE_DIR}/Graphics.h
+    #${INCLUDE_DIR}/PPU.h
 )
 
 # Include the header directory

@@ -12,7 +12,7 @@
 		macros to modify the structs below to represent the system.
 */
 
-enum FLAGS
+enum CPU_FLAGS
 {
 	Z = 0x80, // Zero Flag
 	N = 0x40, // Subtract Flag	

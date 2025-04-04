@@ -19,8 +19,14 @@ enum MemoryMap
 	//Cartridge, Switchable bank
 	ROMBANK01_N = 0x4000,
 
-	//Video RAM
+	//Video RAM (Start of VRAM Tiledata)
 	VRAM = 0x8000,
+
+	//Tilemap0 (32x32 tiles, indexes VRAM Tiledata one byte at a time)
+	TILEMAP0 = 0x9800,
+
+	//Tilemap1 (32x32 tiles, indexes VRAM Tiledata one byte at a time)
+	TILEMAP1 = 0x9C00,
 
 	//Cartridge, Potentially switchable bank
 	EXTERNALRAM = 0xA000,

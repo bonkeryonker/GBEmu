@@ -34,5 +34,4 @@ private:
 #define GB_WARN(...) Log::GetGBLogger()->warn(__VA_ARGS__)
 #define GB_INFO(...) Log::GetGBLogger()->info(__VA_ARGS__)
 #define GB_TRACE(...) Log::GetGBLogger()->trace(__VA_ARGS__)
-
 #endif

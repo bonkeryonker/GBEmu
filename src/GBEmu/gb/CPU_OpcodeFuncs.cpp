@@ -219,9 +219,9 @@ void CPU::f_INC_r8(u8& reg)
 	bool halfCarryFlag = ((reg & 0x0F) + 1) & 0x10;
 	reg++;
 	bool isZeroFlag = (reg == 0);
-	this->registers.setFlag(FLAGS::H, halfCarryFlag);
-	this->registers.setFlag(FLAGS::Z, isZeroFlag);
-	this->registers.setFlag(FLAGS::N, false);
+	this->registers.setFlag(CPU_FLAGS::H, halfCarryFlag);
+	this->registers.setFlag(CPU_FLAGS::Z, isZeroFlag);
+	this->registers.setFlag(CPU_FLAGS::N, false);
 }
 
 void CPU::f_INC_ptr(const u16& reg)
@@ -232,9 +232,9 @@ void CPU::f_INC_ptr(const u16& reg)
 	bool isZeroFlag = (reg == 0);
 	this->m_ram_ptr->setItem(reg, originalVal);
 
-	this->registers.setFlag(FLAGS::H, halfCarryFlag);
-	this->registers.setFlag(FLAGS::Z, isZeroFlag);
-	this->registers.setFlag(FLAGS::N, false);
+	this->registers.setFlag(CPU_FLAGS::H, halfCarryFlag);
+	this->registers.setFlag(CPU_FLAGS::Z, isZeroFlag);
+	this->registers.setFlag(CPU_FLAGS::N, false);
 }
 
 void CPU::f_DEC_ptr(const u16& reg)
@@ -260,9 +260,9 @@ void CPU::f_DEC_r8(u8& reg)
 	bool halfCarryFlag = (reg & 0x0F) == 0;
 	reg--;
 	bool isZeroFlag = (reg == 0);
-	this->registers.setFlag(FLAGS::H, halfCarryFlag);
-	this->registers.setFlag(FLAGS::Z, isZeroFlag);
-	this->registers.setFlag(FLAGS::N, true);
+	this->registers.setFlag(CPU_FLAGS::H, halfCarryFlag);
+	this->registers.setFlag(CPU_FLAGS::Z, isZeroFlag);
+	this->registers.setFlag(CPU_FLAGS::N, true);
 }
 
 void CPU::f_RLCA()

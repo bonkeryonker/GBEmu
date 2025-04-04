@@ -11,4 +11,5 @@ static constexpr u16 GLOBAL_CHECKSUM_ADDRESS = 0x014E; // Big endian, 0x014E is 
 static constexpr u16 RAM_SIZE = (0xFFFF - MAX_CARTSIZE) + 0x01;
 static constexpr int LCD_WIDTH = 160;
 static constexpr int LCD_HEIGHT = 144;
+static constexpr uint32_t LCD_BG_COLOR = 0x8bac0fff;
 #endif
