@@ -81,9 +81,14 @@ bool Screen::initMainWindow()
 	}
 
 	// Configure window
-	SDL_SetWindowTitle(this->mainWindow.window, "GBEmu");
+	this->setWindowTitle();
 	SDL_SetWindowResizable(this->mainWindow.window, SDL_FALSE);
 
 	CORE_WARN("Window and surface successfully created!");
 	return true;
+}
+
+void Screen::setWindowTitle(const char* title)
+{
+	SDL_SetWindowTitle(this->mainWindow.window, title);
 }

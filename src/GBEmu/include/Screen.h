@@ -21,6 +21,8 @@ public:
 	void fillBG(SDL_Rect* bgRect);
 	// Present the renderer buffer, and flush the backbuffer with SDL_RenderClear()
 	void flush();
+	// Set the title of the window
+	void setWindowTitle(const char* title = "GBEmu: Running");
 	// Set the window scale factor. This only takes effect if it's called BEFORE LCD.init()
 	inline void setWindowScaleFactor(int scaleFactor) { this->windowScaleFactor = scaleFactor; }
 private:

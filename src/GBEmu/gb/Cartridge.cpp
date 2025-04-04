@@ -24,6 +24,7 @@ bool Cartridge::loadROM(const std::string& pathToRom)
 
 	romFile.read(reinterpret_cast<char*>(this->romBuf), MAX_CARTSIZE);
 	romFile.close();
+	GB_INFO("Loaded contents of {} to rom buffer.", pathToRom.c_str());
 	return true;
 }
 

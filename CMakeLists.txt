@@ -29,9 +29,10 @@ set(SOURCES
     ${GB}/Instruction.cpp
     ${GB}/Memory.cpp
     ${GB}/SerialDebug.cpp
+    ${GB}/Gameboy.cpp
     #${GB}/PPU.cpp
     ${CORE}/Log.cpp
-    ${CORE}/LCD.cpp
+    ${CORE}/Screen.cpp
     ${SRC_DIR}/main.cpp
 
 )
@@ -41,13 +42,14 @@ set(HEADERS
     ${INCLUDE_DIR}/Clock.h
     ${INCLUDE_DIR}/CPU.h
     ${INCLUDE_DIR}/Globals.h
-    ${INCLUDE_DIR}/LCD.h
+    ${INCLUDE_DIR}/Screen.h
     ${INCLUDE_DIR}/Instruction.h
     ${INCLUDE_DIR}/Memory.h
     ${INCLUDE_DIR}/Registers.h
     ${INCLUDE_DIR}/SerialDebug.h
     ${INCLUDE_DIR}/Log.h
     ${INCLUDE_DIR}/Graphics.h
+    ${INCLUDE_DIR}/Gameboy.h
     #${INCLUDE_DIR}/PPU.h
 )
 
