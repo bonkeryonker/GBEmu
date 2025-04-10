@@ -13,8 +13,6 @@ public:
 	std::shared_ptr<Cartridge> cart;
 	std::shared_ptr<Memory> ram;
 	std::shared_ptr<CPU> cpu;
-private:
-	bool isOn;
 };
 #endif
 
