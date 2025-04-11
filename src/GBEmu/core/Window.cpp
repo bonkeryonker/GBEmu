@@ -1,11 +1,11 @@
-#include "Screen.h"
+#include "Window.h"
 
-Screen::Screen()
+Window::Window()
 {
 	this->init();
 	this->setDrawColor(Color_RGBA(0x00, 0x00, 0x00, 0xFF)); // black
 }
-Screen::~Screen()
+Window::~Window()
 {
 	// The methods below are safe to call even if sdl failed to initialize or if the window/renderer are null
 	SDL_DestroyRenderer(this->m_winStruct.renderer);
@@ -14,7 +14,7 @@ Screen::~Screen()
 	CORE_WARN("SDL Window destroyed!");
 }
 
-bool Screen::init()
+bool Window::init()
 {
 	if (!this->initWinStruct())
 	{
@@ -26,10 +26,11 @@ bool Screen::init()
 		CORE_ERROR("Failed flushing the backbuffer! Err: {}", SDL_GetError());
 		return false;
 	}
+	this->isHidden = false;
 	return true;
 }
 
-bool Screen::setDrawColor(Color_RGBA rgba)
+bool Window::setDrawColor(Color_RGBA rgba)
 {
 	if (SDL_SetRenderDrawColor(this->m_winStruct.renderer, rgba.r(), rgba.g(), rgba.b(), rgba.a()) < 0)
 	{
@@ -39,7 +40,7 @@ bool Screen::setDrawColor(Color_RGBA rgba)
 	return true;
 }
 
-void Screen::flush()
+void Window::flush()
 {
 	SDL_RenderPresent(this->m_winStruct.renderer);
 	if (SDL_RenderClear(this->m_winStruct.renderer) < 0)
@@ -48,7 +49,7 @@ void Screen::flush()
 	}
 }
 
-bool Screen::initWinStruct()
+bool Window::initWinStruct()
 {
 	if (SDL_CreateWindowAndRenderer(LCD_WIDTH * this->m_scaleFactor, LCD_HEIGHT * this->m_scaleFactor, 0, &(this->m_winStruct.window), &(this->m_winStruct.renderer)) == -1)
 	{
@@ -64,7 +65,29 @@ bool Screen::initWinStruct()
 	return true;
 }
 
-void Screen::setWindowTitle(const char* title)
+void Window::setWindowTitle(const char* title)
 {
 	SDL_SetWindowTitle(this->m_winStruct.window, title);
+}
+
+void Window::toggleHidden()
+{
+	if (this->isHidden)
+		this->show();
+	else
+		this->hide();
+}
+
+void Window::hide()
+{
+	this->isHidden = true;
+	SDL_HideWindow(this->m_winStruct.window);
+	CORE_WARN("Hiding window");
+}
+
+void Window::show()
+{
+	this->isHidden = false;
+	SDL_ShowWindow(this->m_winStruct.window);
+	CORE_WARN("Showing window");
 }

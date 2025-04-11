@@ -16,7 +16,7 @@ namespace App
 		CORE_WARN("SDL Initialized.");
 
 		// Create main screen
-		m_mainWindow = std::make_unique<Screen>();
+		m_mainWindow = std::make_unique<Window>();
 		m_mainWindow->setWindowTitle("GBEmu: Drop ROM into window");
 
 		// Create gameboy object
@@ -93,7 +93,6 @@ namespace App
 				CORE_INFO("Rompath: {}", m_droppedFilePath.c_str());
 				SDL_free(e.drop.file); // Free the file
 				SDL_EventState(SDL_DROPFILE, SDL_DISABLE); // Disable dropfile events
-				//done = SDL_TRUE; // maybe remove this line?
 				break;
 			}
 		}

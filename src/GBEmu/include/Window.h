@@ -10,11 +10,11 @@ struct SDLWindowSurface
 	SDL_Renderer* renderer;
 };
 
-class Screen
+class Window
 {
 public:
-	Screen();
-	~Screen();
+	Window();
+	~Window();
 
 	// Sets the color for the renderer to draw with. Returns: TRUE if renderer color successfully changed
 	bool setDrawColor(Color_RGBA rgba);
@@ -28,16 +28,29 @@ public:
 	// Set the window scale factor. This only takes effect if it's called BEFORE LCD.init()
 	inline void setWindowScaleFactor(int scaleFactor) { this->m_scaleFactor = scaleFactor; }
 
+	// Toggles the hidden/shown state of the window
+	void toggleHidden();
+
+	// Hides the window
+	void hide();
+
+	// Shows the window if hidden
+	void show();
+
+	// Getters
+	inline const SDL_Window* getNativeWindow() { return this->m_winStruct.window; }
+	inline const SDL_Renderer* getNativeRenderer() { return this->m_winStruct.renderer; }
+
 private:
 	SDLWindowSurface m_winStruct;
 	int m_scaleFactor{ 4 };
+	bool isHidden{ false };
 
 private:
 	// Calls methods below to create a window and renderer. 
 	// Flushes the backbuffer. 
 	// Returns: TRUE if successful
 	bool init();
-
 	bool initWinStruct();
 };
 #endif

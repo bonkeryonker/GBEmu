@@ -4,7 +4,7 @@
 #include <memory>
 #include <string>
 #include "Graphics.h"
-#include "Screen.h"
+#include "Window.h"
 #include "Log.h"
 #include "Gameboy.h"
 
@@ -30,7 +30,8 @@ namespace App
 		bool m_running{ false };
 		APPSTATE m_appState{ WAIT_FOR_ROM };
 		std::string m_droppedFilePath{ "" }; // Instantiated when file dropped event occurs
-		std::unique_ptr<Screen> m_mainWindow{ nullptr }; // Instantiated inside constructor
+		std::unique_ptr<Window> m_mainWindow{ nullptr }; // Instantiated inside constructor
+		//std::unique_ptr<Window> m_debugWindow{ nullptr }; // Instantiated inside constructor
 		std::unique_ptr<Gameboy> m_gb{ nullptr }; // Instantiated inside constructor
 	private:
 		void handleSDLEvents();
