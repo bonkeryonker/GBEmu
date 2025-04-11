@@ -12,8 +12,7 @@ int main()
 
 	// Set up app
 	App::Application app;
-	app.run();
 
-	// Clean up
-	CORE_WARN("Closing GBEmu.");
+	// Run app, return exit status
+	return app.run();
 }
