@@ -33,6 +33,7 @@ set(SOURCES
     #${GB}/PPU.cpp
     ${CORE}/Log.cpp
     ${CORE}/Screen.cpp
+    ${CORE}/Application.cpp
     ${SRC_DIR}/main.cpp
 
 )
@@ -50,6 +51,7 @@ set(HEADERS
     ${INCLUDE_DIR}/Log.h
     ${INCLUDE_DIR}/Graphics.h
     ${INCLUDE_DIR}/Gameboy.h
+    ${INCLUDE_DIR}/Application.h
     #${INCLUDE_DIR}/PPU.h
 )
 

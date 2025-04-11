@@ -1,35 +1,27 @@
 #include "Screen.h"
 
-Screen::Screen(int scaleFactor)
+Screen::Screen()
 {
-	this->windowScaleFactor = scaleFactor;
 	this->init();
 	this->setDrawColor(Color_RGBA(0x00, 0x00, 0x00, 0xFF)); // black
 }
 Screen::~Screen()
 {
 	// The methods below are safe to call even if sdl failed to initialize or if the window/renderer are null
-	SDL_DestroyRenderer(this->mainWindow.renderer);
+	SDL_DestroyRenderer(this->m_winStruct.renderer);
 	CORE_WARN("SDL Renderer destroyed!");
-	SDL_DestroyWindow(this->mainWindow.window);
+	SDL_DestroyWindow(this->m_winStruct.window);
 	CORE_WARN("SDL Window destroyed!");
-	SDL_Quit();
-	CORE_WARN("SDL uninitialized!");
 }
 
 bool Screen::init()
 {
-	if (!this->initSDL())
-	{
-		return false;
-	}
-
-	if (!this->initMainWindow())
+	if (!this->initWinStruct())
 	{
 		return false;
 	}
 	// Flush the backbuffer
-	if (SDL_RenderClear(this->mainWindow.renderer) < 0)
+	if (SDL_RenderClear(this->m_winStruct.renderer) < 0)
 	{
 		CORE_ERROR("Failed flushing the backbuffer! Err: {}", SDL_GetError());
 		return false;
@@ -39,7 +31,7 @@ bool Screen::init()
 
 bool Screen::setDrawColor(Color_RGBA rgba)
 {
-	if (SDL_SetRenderDrawColor(this->mainWindow.renderer, rgba.r(), rgba.g(), rgba.b(), rgba.a()) < 0)
+	if (SDL_SetRenderDrawColor(this->m_winStruct.renderer, rgba.r(), rgba.g(), rgba.b(), rgba.a()) < 0)
 	{
 		CORE_ERROR("Failed to set renderer draw color to {:04X}. Err: {}", (uint32_t)rgba, SDL_GetError());
 		return false;
@@ -47,34 +39,18 @@ bool Screen::setDrawColor(Color_RGBA rgba)
 	return true;
 }
 
-void Screen::fillBG(SDL_Rect* bgRect)
-{
-	SDL_RenderFillRect(this->mainWindow.renderer, bgRect);
-}
-
 void Screen::flush()
 {
-	SDL_RenderPresent(this->mainWindow.renderer);
-	if (SDL_RenderClear(this->mainWindow.renderer) < 0)
+	SDL_RenderPresent(this->m_winStruct.renderer);
+	if (SDL_RenderClear(this->m_winStruct.renderer) < 0)
 	{
 		CORE_ERROR("Failed flushing the backbuffer! Err: {}", SDL_GetError());
 	}
 }
 
-bool Screen::initSDL()
+bool Screen::initWinStruct()
 {
-	if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_AUDIO) < 0)
-	{
-		CORE_ERROR("Failed to initialize SDL! Err: {}", SDL_GetError());
-		return false;
-	}
-	CORE_WARN("SDL Initialized.");
-	return true;
-}
-
-bool Screen::initMainWindow()
-{
-	if (SDL_CreateWindowAndRenderer(LCD_WIDTH * this->windowScaleFactor, LCD_HEIGHT * this->windowScaleFactor, 0, &(this->mainWindow.window), &(this->mainWindow.renderer)) == -1)
+	if (SDL_CreateWindowAndRenderer(LCD_WIDTH * this->m_scaleFactor, LCD_HEIGHT * this->m_scaleFactor, 0, &(this->m_winStruct.window), &(this->m_winStruct.renderer)) == -1)
 	{
 		CORE_ERROR("Failed to create window and renderer! Err: {}", SDL_GetError());
 		return false;
@@ -82,7 +58,7 @@ bool Screen::initMainWindow()
 
 	// Configure window
 	this->setWindowTitle();
-	SDL_SetWindowResizable(this->mainWindow.window, SDL_FALSE);
+	SDL_SetWindowResizable(this->m_winStruct.window, SDL_FALSE);
 
 	CORE_WARN("Window and surface successfully created!");
 	return true;
@@ -90,5 +66,5 @@ bool Screen::initMainWindow()
 
 void Screen::setWindowTitle(const char* title)
 {
-	SDL_SetWindowTitle(this->mainWindow.window, title);
+	SDL_SetWindowTitle(this->m_winStruct.window, title);
 }
