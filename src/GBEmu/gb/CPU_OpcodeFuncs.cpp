@@ -334,9 +334,7 @@ void CPU::f_JR_flag(int8_t steps, u8 FLAG, bool jumpIfFlag)
 		this->f_JR_s8(steps);
 	else //do nothing. PC will be incremented upon next fetch()
 	{
-#ifdef _DEBUG
-		printf("Didn't jump to %04X because of flag value.\n", this->registers.pc + steps);
-#endif
+		GB_TRACE("Didn't jump to {:04X} because of flag value.", this->registers.pc + steps);
 	}
 }
 
@@ -404,10 +402,9 @@ void CPU::f_PUSH(const u16 srcReg)
 	this->m_ram_ptr->setItem(this->registers.sp - 1, (srcReg & 0xFF00) >> 8); // Push high byte of srcReg
 	this->m_ram_ptr->setItem(this->registers.sp - 2, srcReg & 0x00FF); // Push low byte of srcReg
 	this->registers.sp -= 2; // Decrement SP by two
-#ifdef _DEBUG
+
 	this->m_stackSizeCounter++;
-	printf("Pushed %02X%02X to stack.\nStack size: %u, SP: %04X\n", (srcReg & 0xFF00) >> 8, (srcReg & 0x00FF), (this->m_stackSizeCounter), (this->registers.sp));
-#endif
+	GB_TRACE("Pushed {:02X}{:02X} to stack. (Size: {}, SP: {:04X})", (srcReg & 0xFF00) >> 8, (srcReg & 0x00FF), (this->m_stackSizeCounter), (this->registers.sp));
 }
 
 void CPU::f_POP(u16& destReg)
@@ -418,10 +415,8 @@ void CPU::f_POP(u16& destReg)
 	destReg |= (highByte) << 8;
 	this->registers.sp += 2;
 
-#ifdef _DEBUG
 	this->m_stackSizeCounter--;
-	printf("Popped %04X from stack.\nStack size: %u, SP: %04X\n", destReg, (this->m_stackSizeCounter), (this->registers.sp));
-#endif
+	GB_TRACE("Popped {:04X} from stack. (Size: {}, SP: {:04X})", destReg, (this->m_stackSizeCounter), (this->registers.sp));
 }
 
 void CPU::f_CALL(const u16 callAddr)
@@ -469,9 +464,7 @@ void CPU::f_RST_n(u8 n)
 	default:
 		this->registers.pc = 0x0000;
 		this->m_isHalted = true;
-#ifdef _DEBUG
-		printf("Invalid reset code %d. Halting.\n", n);
-#endif
+		GB_WARN("Invalid reset code {} encountered. Halting.", n);
 		break;
 
 	}
@@ -479,6 +472,6 @@ void CPU::f_RST_n(u8 n)
 
 void CPU::f_ILLEGAL_OP(const u8 opcode)
 {
-	printf("Illegal opcode %02X encountered at memory address %04X\n Halting.\n", opcode, this->registers.pc - 1);
+	GB_ERROR("Illegal opcode {:02X} encountered at address {:04X}. Halting.", opcode, this->registers.pc - 1);
 	this->m_isHalted = true;
 }

@@ -53,7 +53,14 @@ namespace App
 				waitForROM();
 				break;
 			default:
-				m_gb->cpu->tick();
+				if (m_gb->cpu->isHalted())
+				{
+					m_mainWindow->setWindowTitle("GBEmu: Halted");
+				}
+				else
+				{
+					m_gb->cpu->tick();
+				}
 				break;
 			}
 
