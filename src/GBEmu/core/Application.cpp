@@ -22,7 +22,7 @@ namespace App
 		// Create gameboy object
 		m_gb = std::make_unique<Gameboy>();
 
-		// We start in app state: WAIT_FOR_ROM, so let's enable that event by default for SDL
+		// We start in app state: WAIT_FOR_ROM, so let's enable that event for SDL by default
 		SDL_EventState(SDL_DROPFILE, SDL_ENABLE);
 	}
 

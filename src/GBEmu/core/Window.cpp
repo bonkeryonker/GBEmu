@@ -51,7 +51,7 @@ void Window::flush()
 
 bool Window::initWinStruct()
 {
-	if (SDL_CreateWindowAndRenderer(LCD_WIDTH * this->m_scaleFactor, LCD_HEIGHT * this->m_scaleFactor, 0, &(this->m_winStruct.window), &(this->m_winStruct.renderer)) == -1)
+	if (SDL_CreateWindowAndRenderer(LCD_WIDTH, LCD_HEIGHT, 0, &(this->m_winStruct.window), &(this->m_winStruct.renderer)) == -1)
 	{
 		CORE_ERROR("Failed to create window and renderer! Err: {}", SDL_GetError());
 		return false;

@@ -4,14 +4,6 @@
 #include <stdio.h>
 #include "Globals.h"
 
-/*
-	TODO: Account for Big Endian machines
-
-		This implementation assumes a little-endian system (such as Windows).
-		All x86 machines SHOULD be little-endian, but eventually we should use some precompiler
-		macros to modify the structs below to represent the system.
-*/
-
 enum CPU_FLAGS
 {
 	Z = 0x80, // Zero Flag
@@ -74,6 +66,7 @@ struct REGISTERS {
 		return this->f & flag;
 	}
 
+	[[deprecated("Logging should be done using SPDLog via the Log wrapper class.")]]
 	void printAsHex()
 	{
 		printf("Registers:\n");

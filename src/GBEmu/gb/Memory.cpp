@@ -31,6 +31,18 @@ bool Memory::setItem(u16 address, u8 value)
 	return true;
 }
 
+u8* Memory::getRaw(u16 address)
+{
+	u16 normalAddr = normalizeAddress(address);
+	if (Memory::isRomAddress(address)) // Lower address than VRAM, must be on cart ROM
+	{
+		GB_WARN("Raw access to {:04X} forbidden. (Address is in ROM!)", address);
+		GB_WARN("Returning normalized value: {:04X}", normalAddr);
+	}
+	GB_INFO("Returning pointer to RAM address {:04X}", normalAddr);
+	return &(this->ramBuf[normalAddr]);
+}
+
 bool Memory::dumpMemoryToFile(const std::string& filename, bool dumpCartridge)
 {
 	if(dumpCartridge)
@@ -42,7 +54,6 @@ bool Memory::dumpMemoryToFile(const std::string& filename, bool dumpCartridge)
 	std::ofstream outFile(filename, streamFlags);
 	if (!outFile)
 	{
-		//printf("Unable to open file for writing\n");
 		GB_ERROR("Unable to open file: {} for writing!", filename.c_str());
 		return false;
 	}

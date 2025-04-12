@@ -81,6 +81,10 @@ public:
 	// RETURNS: true if write was successful (Address not in cartridge ROM).
 	bool setItem(u16 address, u8 value);
 
+	// Get a raw pointer to a specific byte in the ram buffer.
+	// It is on the user of this function to ensure lifetime safety.
+	u8* getRaw(u16 address);
+
 	// Outputs the full contents of RAM to a binary file
 	bool dumpMemoryToFile(const std::string& filename="../../bin/memdumps/mem_dump.bin", bool dumpCartridge=true);
 	inline bool dumpMemoryToFile(bool dumpCartridge) { return this->dumpMemoryToFile("../../bin/memdumps/mem_dump.bin", dumpCartridge); }
