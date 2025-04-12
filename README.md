@@ -1,7 +1,7 @@
 
 # GBEmu
 
-A gameboy DMG-01 emulator written in C++ using GLFW and imGUI.
+A gameboy DMG-01 emulator written in C++ using SDL2 and imGUI.
 
 
 
