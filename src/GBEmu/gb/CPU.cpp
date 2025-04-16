@@ -29,6 +29,7 @@ unsigned short CPU::tick()
 		this->setInterruptFlag(highestInterrupt, false);
 	}
 	Instruction currentOp = Instruction::opcodeLookup[this->fetch()];
+	GB_TRACE("Executing PC ${:04X} (0x{:02X})", this->registers.pc - 1, (u8)currentOp.opcode);
 	this->executeInstruction(currentOp.opcode);
 	return currentOp.timing;
 }

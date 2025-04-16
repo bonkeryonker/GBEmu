@@ -5,6 +5,8 @@
 #include "Memory.h"
 #include "Cartridge.h"
 #include "CPU.h"
+#include "PPU.h"
+
 class Gameboy
 {
 public:
@@ -13,6 +15,7 @@ public:
 	std::shared_ptr<Cartridge> cart;
 	std::shared_ptr<Memory> ram;
 	std::shared_ptr<CPU> cpu;
+	std::shared_ptr<PPU::PPU> ppu;
 };
 #endif
 

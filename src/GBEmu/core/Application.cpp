@@ -51,8 +51,16 @@ namespace App
 			{
 			case WAIT_FOR_ROM:
 				waitForROM();
+				m_dumpMemory = false; // Reset memdump bool if we're in the WAIT_FOR_ROM state so we don't immediately dump upon rom execution
 				break;
 			default:
+				// Check if we should dump memory to file (if F3 was pressed)
+				if (m_dumpMemory)
+				{
+					m_dumpMemory = false; // Reset memdump bool so we only dump once per press
+					m_gb->ram->dumpMemoryToFile(true); // dump cartridge and ram to file
+				}
+
 				if (m_gb->cpu->isHalted())
 				{
 					m_mainWindow->setWindowTitle("GBEmu: Halted");
@@ -60,6 +68,7 @@ namespace App
 				else
 				{
 					m_gb->cpu->tick();
+					m_gb->ppu->tick();
 				}
 				break;
 			}
@@ -94,15 +103,24 @@ namespace App
 				SDL_free(e.drop.file); // Free the file
 				SDL_EventState(SDL_DROPFILE, SDL_DISABLE); // Disable dropfile events
 				break;
+			case SDL_KEYDOWN:
+				if (e.key.keysym.sym == SDLK_F3)
+				{
+					CORE_INFO("Key down: F3");
+					m_dumpMemory = true;
+				}
 			}
 		}
 	}
 
 	void Application::waitForROM()
 	{
+		// If a dropfile event hasn't triggered, m_droppedFilePath remains empty
+		// so we just return and keep checking the event queue
 		if (m_droppedFilePath == "")
 			return;
 
+		// Otherwise let's load the ROM and change the application state
 		m_gb->cart->loadROM(m_droppedFilePath);
 		m_mainWindow->setWindowTitle(); // Set to default title
 		m_appState = RUN_ROM;

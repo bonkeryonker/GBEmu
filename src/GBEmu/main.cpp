@@ -7,7 +7,8 @@ int main()
 {
 	// Set up logging
 	Log::Init();
-	Log::SetLogLevel(Log::GetCoreLogger(), spdlog::level::level_enum::trace);
+	Log::SetLogLevel(Log::GetCoreLogger(), spdlog::level::level_enum::info);
+	Log::SetLogLevel(Log::GetGBLogger(), spdlog::level::level_enum::info);
 	CORE_WARN("Logging initialized. Watch out, beavers!");
 
 	// Set up app

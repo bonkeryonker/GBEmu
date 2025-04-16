@@ -28,6 +28,7 @@ namespace App
 	private:
 		int m_exit_status{ 0 };
 		bool m_running{ false };
+		bool m_dumpMemory{ false };
 		APPSTATE m_appState{ WAIT_FOR_ROM };
 		std::string m_droppedFilePath{ "" }; // Instantiated when file dropped event occurs
 		std::unique_ptr<Window> m_mainWindow{ nullptr }; // Instantiated inside constructor

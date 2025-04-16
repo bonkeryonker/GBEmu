@@ -2,6 +2,7 @@
 
 Window::Window()
 {
+	this->m_scaleFactor = 4;
 	this->init();
 	this->setDrawColor(Color_RGBA(0x00, 0x00, 0x00, 0xFF)); // black
 }
@@ -51,7 +52,7 @@ void Window::flush()
 
 bool Window::initWinStruct()
 {
-	if (SDL_CreateWindowAndRenderer(LCD_WIDTH, LCD_HEIGHT, 0, &(this->m_winStruct.window), &(this->m_winStruct.renderer)) == -1)
+	if (SDL_CreateWindowAndRenderer(LCD_WIDTH * m_scaleFactor, LCD_HEIGHT * m_scaleFactor, 0, &(this->m_winStruct.window), &(this->m_winStruct.renderer)) == -1)
 	{
 		CORE_ERROR("Failed to create window and renderer! Err: {}", SDL_GetError());
 		return false;

@@ -86,8 +86,8 @@ public:
 	u8* getRaw(u16 address);
 
 	// Outputs the full contents of RAM to a binary file
-	bool dumpMemoryToFile(const std::string& filename="../../bin/memdumps/mem_dump.bin", bool dumpCartridge=true);
-	inline bool dumpMemoryToFile(bool dumpCartridge) { return this->dumpMemoryToFile("../../bin/memdumps/mem_dump.bin", dumpCartridge); }
+	bool dumpMemoryToFile(const std::string& filename="../bin/memdumps/mem_dump.bin", bool dumpCartridge=true);
+	inline bool dumpMemoryToFile(bool dumpCartridge) { return this->dumpMemoryToFile("../bin/memdumps/mem_dump.bin", dumpCartridge); }
 
 private:
 	u8* ramBuf;
