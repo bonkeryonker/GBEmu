@@ -15,3 +15,5 @@
 /build
 /clean.bat
 /generate.bat
+/removeSubmodule.bat
+/CMakeLists_TTF.txt
