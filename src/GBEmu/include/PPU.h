@@ -1,6 +1,7 @@
 #ifndef PPU_H
 #define PPU_H
 #include <memory> // shared_ptr
+#include "Graphics.h"
 #include "Globals.h"
 #include "Memory.h"
 
@@ -8,8 +9,12 @@ namespace PPU
 {
 	// Dots per M-Cycle (Total no. of pixels drawn in 1 equivalent CPU M-Cycle)
 	constexpr int DPM = 4;
+	// Number of scanlines in 1 frame
+	constexpr int SCANLINE_COUNT = 154;
+	// Dots per line (Total no. of pixels in 1 scanline)
+	constexpr int DPL = 456;
 	// Dots per frame (Total no. of pixels in a one "frame" render)
-	constexpr int DPF = 70224;
+	constexpr int DPF = SCANLINE_COUNT * DPL;
 	// Total count of PPU Registers
 	// (PPU Registers are addresses in memory)
 	constexpr int REGISTER_COUNT = 11;
@@ -39,39 +44,39 @@ namespace PPU
 		// Enum containing bitmasks for LCDC
 		typedef enum CONTROL_FLAGS
 		{
-			// Master enable for PPU and LCD
-			// (0: off, 1: on)
+			// Master enable for PPU and LCD 
+			// LCDC.7 (0: off, 1: on)
 			LCD_ENABLE = 0b10000000,
 
 			// Area in RAM PPU looks for the window's tilemap.
-			// (0: 0x9800-0x9BFF, 1: 0x9C00-0x9FFF)
+			// LCDC.6 (0: 0x9800-0x9BFF, 1: 0x9C00-0x9FFF)
 			WIN_TILEMAP = 0b01000000, 
 
 			// Enable for if the window should be displayed.
 			// Overridden by bit 0 (BGWIN_PRIORITY)
-			// (0: off, 1: on)
+			// LCDC.5 (0: off, 1: on)
 			WINDOW_ENABLE = 0b00100000,
 
-			// Area in RAM PPU looks for window/bg's tilemap data.
-			// (0: 0x8800-97FF, 1: 0x8000-0x8FFF)
+			// Area in RAM PPU looks for window/bg's tile data.
+			// LCDC.4 (0: 0x8800-97FF, 1: 0x8000-0x8FFF)
 			BGWIN_TILEDAT = 0b00010000,
 
 			// Area in RAM PPU looks for bg's tilemap.
-			// (0: 0x9800-0x9BFF, 1: 0x9C00-0x9FFF)
+			// LCDC.3 (0: 0x9800-0x9BFF, 1: 0x9C00-0x9FFF)
 			BG_TILEMAP = 0b00001000,
 
 			// Size of sprites (in pixels)
-			// (0: 8x8, 1: 8x16)
+			// LCDC.2 (0: 8x8, 1: 8x16)
 			OBJ_SIZE = 0b000000100,
 
 			// Enable for if sprites should be rendered or not
-			// (0: off, 1: on)
+			// LCDC.1 (0: off, 1: on)
 			OBJ_ENABLE = 0b00000010,
 
 			// When off, both BG and Window become blank.
 			// This behaves differently on CGBs, but we're only
 			// targetting DMG emulation.
-			// (0: off, 1: on)
+			// LCDC.0 (0: off, 1: on)
 			BGWIN_PRIORITY = 0b00000001
 			
 		}LCDC_FLAG;
@@ -184,6 +189,13 @@ namespace PPU
 		// Updates the value of m_currentState to accurately represent the value shown in the STAT register
 		void updateState();
 		inline bool isValidRegister(const Register& r){ return (r.index >= 0 && r.index < REGISTER_COUNT); }
+
+		// Output an entire frame pixel by pixel
+		void doBlit();
+
+		// Takes a 1 byte address for tiledata and converts it to the correct u16 address according to LCDC.4
+		// Returns a 16-byte tile of the data at that address.
+		Tile getTile(u8 address);
 	};
 }
 #endif

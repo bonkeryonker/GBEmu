@@ -78,6 +78,7 @@ set(SDL2_DISABLE_INSTALL TRUE CACHE BOOL "Disabling SDL2 install target" FORCE)
 set(SDL2_DISABLE_TEST TRUE CACHE BOOL "Disabling SDL2 test project" FORCE)
 set(SDL2_BUILD_SHARED OFF CACHE BOOL "Disabling SDL2 shared library" FORCE)
 set(SDL2_BUILD_STATIC ON CACHE BOOL "Enabling SDL2 static library" FORCE)
+
 # Add subdirectory
 add_subdirectory(vendor/SDL EXCLUDE_FROM_ALL)
 # Link to project
@@ -107,5 +108,3 @@ elseif(CMAKE_BUILD_TYPE STREQUAL "Release")
 else()
     set(BUILD_TYPE_DIR "unknown")
 endif()
-
-#set_property(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} PROPERTY VS_STARTUP_PROJECT GBEmu)

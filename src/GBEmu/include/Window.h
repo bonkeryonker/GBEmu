@@ -1,14 +1,15 @@
-#ifndef SCREEN_H
-#define SCREEN_H
+#ifndef WINDOW_H
+#define WINDOW_H
 #include <SDL2/SDL.h>
+#include <string>
 #include "Graphics.h"
 #include "Log.h"
 
-struct SDLWindowSurface
+typedef struct SDLRenderStruct
 {
 	SDL_Window* window;
 	SDL_Renderer* renderer;
-};
+}WindowUtils;
 
 class Window
 {
@@ -40,12 +41,12 @@ public:
 	// Getters
 	inline const SDL_Window* getNativeWindow() { return this->m_winStruct.window; }
 	inline const SDL_Renderer* getNativeRenderer() { return this->m_winStruct.renderer; }
+	inline const Uint32 getNativeWindowID() { return SDL_GetWindowID(this->m_winStruct.window); }
 
 private:
-	SDLWindowSurface m_winStruct;
+	WindowUtils m_winStruct;
 	int m_scaleFactor{ 4 };
-	bool isHidden{ false };
-
+	bool m_isHidden{ false };
 private:
 	// Calls methods below to create a window and renderer. 
 	// Flushes the backbuffer. 

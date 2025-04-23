@@ -1,9 +1,12 @@
 #ifndef GFX_H
 #define GFX_H
 #include "Globals.h"
+#include <tuple> // std::pair
 
 static constexpr int TILE_SIZE_PX = 8;
-static constexpr int TILEMAP_SIZE = 32;
+static constexpr int TILE_SIZE_BYTE = 16;
+// Size of a tilemap in bytes (tilemaps are 32x32 maps of indices to 2bpp-tiledata)
+static constexpr int TILEMAP_SIZE = 32*32;
 
 struct Color_RGBA {
     uint32_t value;
@@ -33,4 +36,56 @@ struct DMGPaletteColors_RGBA
     static constexpr Color_RGBA DARK_GRAY = Color_RGBA(0x34, 0x68, 0x56, 0xFF);
     static constexpr Color_RGBA BLACK = Color_RGBA(0x08, 0x18, 0x20, 0xFF);
 };
+
+typedef struct GB_Tile_Row
+{
+    union
+    {
+        struct
+        {
+            u8 low;
+            u8 high;
+        };
+        u16 data;
+    };
+    constexpr GB_Tile_Row() : data(0) {}
+    constexpr GB_Tile_Row(u16 data) : data(data) {}
+    constexpr GB_Tile_Row(u8 low, u8 high) : low(low), high(high) {}
+}TileRow;
+
+typedef struct Gameboy_Tile
+{
+    union
+    {
+        struct
+        {
+            TileRow row0;
+            TileRow row1;
+            TileRow row2;
+            TileRow row3;
+            TileRow row4;
+            TileRow row5;
+            TileRow row6;
+            TileRow row7;
+        };
+        TileRow rows[8]; // Row-wise access
+        u8 bytes[16]; // Byte-wise access
+    };
+
+    Gameboy_Tile() : rows{} {}
+
+    std::pair<uint64_t, uint64_t> toHex() const
+    {
+        uint64_t low = 0;
+        uint64_t high = 0;
+
+        for (int i = 0; i < 8; i++)
+            low |= (uint64_t)(bytes[i]) << (8 * (7 - i)); // byte[0] ends up in MSB of low
+
+        for (int i = 8; i < 16; i++)
+            high |= (uint64_t)(bytes[i]) << (8 * (15 - i)); // byte[8] in MSB of high
+
+        return { high, low };
+    }
+}Tile;
 #endif

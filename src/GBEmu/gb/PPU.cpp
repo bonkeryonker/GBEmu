@@ -18,6 +18,14 @@ namespace PPU
 	void PPU::tick()
 	{
 		this->updateState();
+		switch (m_currentState)
+		{
+		case PPU_STATES::STATE::BLIT:
+			this->doBlit();
+			break;
+		default:
+			break;
+		}
 	}
 
 	const u8 PPU::getRegister(const Register r)
@@ -76,5 +84,39 @@ namespace PPU
 			const char* prevStateStr = PPU_STATES::toString(prevState);
 			GB_INFO("PPU State: {} (was {})", stateStr, prevStateStr);
 		}
+	}
+
+	void PPU::doBlit()
+	{
+		bool isHighTilemapAddress = (bool)(getRegister(Registers::LCDC) & Registers::CONTROL_FLAGS::BG_TILEMAP);
+		u16 tilemapStartAddress = (isHighTilemapAddress) ? 0x9C00 : 0x9800;
+		auto tilemapIndex = 0;
+		for (auto tilemapIndex = 0; tilemapIndex < TILEMAP_SIZE; tilemapIndex++)
+		{
+			u8 tileDataAddr = m_ram_ptr->getItem(tilemapStartAddress + tilemapIndex);
+			Tile currentTile = getTile(tileDataAddr);
+		}
+	}
+
+	Tile PPU::getTile(u8 address)
+	{
+		// if TRUE: use $8000 as base pointer, and unsigned addressing
+		// if FALSE: use $9000 as base pointer, and signed addressing
+		bool isHighTiledatAddress = (bool)(getRegister(Registers::LCDC) & Registers::CONTROL_FLAGS::BGWIN_TILEDAT);
+		u16 basePointer = (isHighTiledatAddress) ? 0x8000 : 0x9000;
+		u16 tileAddress;
+		Tile retVal;
+
+		if (!isHighTiledatAddress)
+			tileAddress = (int8_t)address + basePointer; // Signed addressing mode
+		else
+			tileAddress = address + basePointer; // Unsigned addressing mode
+
+		for (auto i = 0; i < TILE_SIZE_BYTE; i++)
+		{
+			retVal.bytes[i] = m_ram_ptr->getItem(tileAddress + i);
+		}
+
+		return retVal;
 	}
 }

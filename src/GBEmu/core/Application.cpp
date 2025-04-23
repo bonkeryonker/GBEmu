@@ -17,7 +17,12 @@ namespace App
 
 		// Create main screen
 		m_mainWindow = std::make_unique<Window>();
-		m_mainWindow->setWindowTitle("GBEmu: Drop ROM into window");
+		m_mainWindow->setWindowTitle("Drop ROM into window");
+
+		// Create debug screen
+		m_debugWindow = std::make_unique < Window>();
+		m_debugWindow->setWindowTitle("Debug");
+		m_debugWindow->toggleHidden();
 
 		// Create gameboy object
 		m_gb = std::make_unique<Gameboy>();
@@ -73,8 +78,9 @@ namespace App
 				break;
 			}
 
-			// Update SDL window renderer
+			// Flush SDL renderer buffers
 			m_mainWindow->flush();
+			m_debugWindow->flush();
 		}
 
 		return m_exit_status;
@@ -93,9 +99,19 @@ namespace App
 		{
 			switch (e.type)
 			{
-			case SDL_QUIT:
-				this->stop();
-				done = SDL_TRUE;
+			case SDL_WINDOWEVENT:
+				if (e.window.event == SDL_WINDOWEVENT_CLOSE)
+				{
+					if (e.window.windowID == m_debugWindow->getNativeWindowID())
+					{
+						m_debugWindow->hide();
+					}
+					else // Must be main window
+					{
+						this->stop();
+						done = SDL_TRUE;
+					}
+				}
 				break;
 			case SDL_DROPFILE:
 				m_droppedFilePath = e.drop.file; // deep copy and implicit conversion to std::string
@@ -109,6 +125,12 @@ namespace App
 					CORE_INFO("Key down: F3");
 					m_dumpMemory = true;
 				}
+				else if (e.key.keysym.sym == SDLK_F2)
+				{
+					CORE_INFO("Key down: F2");
+					m_debugWindow->toggleHidden();
+				}
+				break;
 			}
 		}
 	}

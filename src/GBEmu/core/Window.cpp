@@ -27,7 +27,7 @@ bool Window::init()
 		CORE_ERROR("Failed flushing the backbuffer! Err: {}", SDL_GetError());
 		return false;
 	}
-	this->isHidden = false;
+	this->m_isHidden = false;
 	return true;
 }
 
@@ -73,7 +73,7 @@ void Window::setWindowTitle(const char* title)
 
 void Window::toggleHidden()
 {
-	if (this->isHidden)
+	if (this->m_isHidden)
 		this->show();
 	else
 		this->hide();
@@ -81,14 +81,14 @@ void Window::toggleHidden()
 
 void Window::hide()
 {
-	this->isHidden = true;
+	this->m_isHidden = true;
 	SDL_HideWindow(this->m_winStruct.window);
 	CORE_WARN("Hiding window");
 }
 
 void Window::show()
 {
-	this->isHidden = false;
+	this->m_isHidden = false;
 	SDL_ShowWindow(this->m_winStruct.window);
 	CORE_WARN("Showing window");
 }
