@@ -20,6 +20,10 @@ public:
 	// Sets the color for the renderer to draw with. Returns: TRUE if renderer color successfully changed
 	bool setDrawColor(Color_RGBA rgba);
 
+	// Draw a point at coordinate x,y
+	// Returns: TRUE on success
+	bool drawPoint(int x, int y);
+
 	// Present the renderer buffer, and flush the backbuffer with SDL_RenderClear()
 	void flush();
 

@@ -16,16 +16,16 @@ namespace App
 		CORE_WARN("SDL Initialized.");
 
 		// Create main screen
-		m_mainWindow = std::make_unique<Window>();
+		m_mainWindow = std::make_shared<Window>();
 		m_mainWindow->setWindowTitle("Drop ROM into window");
 
 		// Create debug screen
-		m_debugWindow = std::make_unique < Window>();
+		m_debugWindow = std::make_shared<Window>();
 		m_debugWindow->setWindowTitle("Debug");
 		m_debugWindow->toggleHidden();
 
 		// Create gameboy object
-		m_gb = std::make_unique<Gameboy>();
+		m_gb = std::make_unique<Gameboy>(m_mainWindow);
 
 		// We start in app state: WAIT_FOR_ROM, so let's enable that event for SDL by default
 		SDL_EventState(SDL_DROPFILE, SDL_ENABLE);
@@ -69,6 +69,7 @@ namespace App
 				if (m_gb->cpu->isHalted())
 				{
 					m_mainWindow->setWindowTitle("GBEmu: Halted");
+					m_gb->ppu->tick();
 				}
 				else
 				{
@@ -81,6 +82,7 @@ namespace App
 			// Flush SDL renderer buffers
 			m_mainWindow->flush();
 			m_debugWindow->flush();
+			SDL_Delay(0);
 		}
 
 		return m_exit_status;

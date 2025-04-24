@@ -2,7 +2,7 @@
 
 Window::Window()
 {
-	this->m_scaleFactor = 4;
+	this->m_scaleFactor =4;
 	this->init();
 	this->setDrawColor(Color_RGBA(0x00, 0x00, 0x00, 0xFF)); // black
 }
@@ -17,6 +17,11 @@ Window::~Window()
 
 bool Window::init()
 {
+	const SDL_Rect renderViewport = {
+		0, 0,
+		LCD_WIDTH, LCD_HEIGHT
+	};
+
 	if (!this->initWinStruct())
 	{
 		return false;
@@ -27,6 +32,14 @@ bool Window::init()
 		CORE_ERROR("Failed flushing the backbuffer! Err: {}", SDL_GetError());
 		return false;
 	}
+	if (SDL_RenderSetViewport(this->m_winStruct.renderer, &renderViewport) < 0)
+	{
+		CORE_ERROR("Failed to set renderer viewport! Err: {}", SDL_GetError());
+	}
+	if (SDL_RenderSetLogicalSize(this->m_winStruct.renderer, LCD_WIDTH, LCD_HEIGHT) < 0)
+	{
+		CORE_ERROR("Failed to set renderer logical size! Err: {}", SDL_GetError());
+	}
 	this->m_isHidden = false;
 	return true;
 }
@@ -36,6 +49,16 @@ bool Window::setDrawColor(Color_RGBA rgba)
 	if (SDL_SetRenderDrawColor(this->m_winStruct.renderer, rgba.r(), rgba.g(), rgba.b(), rgba.a()) < 0)
 	{
 		CORE_ERROR("Failed to set renderer draw color to {:04X}. Err: {}", (uint32_t)rgba, SDL_GetError());
+		return false;
+	}
+	return true;
+}
+
+bool Window::drawPoint(int x, int y)
+{
+	if (SDL_RenderDrawPoint(this->m_winStruct.renderer, x, y) != 0)
+	{
+		CORE_ERROR("Failed to draw a point at ({},{})", x, y);
 		return false;
 	}
 	return true;

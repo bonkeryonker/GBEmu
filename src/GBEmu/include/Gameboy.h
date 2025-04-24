@@ -10,7 +10,8 @@
 class Gameboy
 {
 public:
-	Gameboy();
+	Gameboy(std::shared_ptr<Window> drawWindow);
+	Gameboy() = delete;
 public:
 	std::shared_ptr<Cartridge> cart;
 	std::shared_ptr<Memory> ram;

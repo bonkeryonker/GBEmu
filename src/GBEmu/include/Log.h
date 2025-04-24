@@ -24,14 +24,27 @@ private:
 };
 
 /* Log macros */
-#define CORE_FATAL(...) Log::GetCoreLogger()->critical(__VA_ARGS__)
-#define CORE_ERROR(...) Log::GetCoreLogger()->error(__VA_ARGS__)
-#define CORE_WARN(...) Log::GetCoreLogger()->warn(__VA_ARGS__)
-#define CORE_INFO(...) Log::GetCoreLogger()->info(__VA_ARGS__)
-#define CORE_TRACE(...) Log::GetCoreLogger()->trace(__VA_ARGS__)
+#ifdef _DEBUG
+	#define CORE_FATAL(...) Log::GetCoreLogger()->critical(__VA_ARGS__)
+	#define CORE_ERROR(...) Log::GetCoreLogger()->error(__VA_ARGS__)
+	#define CORE_WARN(...) Log::GetCoreLogger()->warn(__VA_ARGS__)
+	#define CORE_INFO(...) Log::GetCoreLogger()->info(__VA_ARGS__)
+	#define CORE_TRACE(...) Log::GetCoreLogger()->trace(__VA_ARGS__)
 
-#define GB_ERROR(...) Log::GetGBLogger()->error(__VA_ARGS__)
-#define GB_WARN(...) Log::GetGBLogger()->warn(__VA_ARGS__)
-#define GB_INFO(...) Log::GetGBLogger()->info(__VA_ARGS__)
-#define GB_TRACE(...) Log::GetGBLogger()->trace(__VA_ARGS__)
+	#define GB_ERROR(...) Log::GetGBLogger()->error(__VA_ARGS__)
+	#define GB_WARN(...) Log::GetGBLogger()->warn(__VA_ARGS__)
+	#define GB_INFO(...) Log::GetGBLogger()->info(__VA_ARGS__)
+	#define GB_TRACE(...) Log::GetGBLogger()->trace(__VA_ARGS__)
+#else
+	#define CORE_FATAL(...) Log::GetCoreLogger()->critical(__VA_ARGS__)
+	#define CORE_ERROR(...) Log::GetCoreLogger()->error(__VA_ARGS__)
+	#define CORE_WARN(...) 
+	#define CORE_INFO(...) 
+	#define CORE_TRACE(...) 
+
+	#define GB_ERROR(...) 
+	#define GB_WARN(...) 
+	#define GB_INFO(...) Log::GetGBLogger()->info(__VA_ARGS__)
+	#define GB_TRACE(...)
+#endif
 #endif

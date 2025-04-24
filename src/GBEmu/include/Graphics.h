@@ -5,8 +5,11 @@
 
 static constexpr int TILE_SIZE_PX = 8;
 static constexpr int TILE_SIZE_BYTE = 16;
-// Size of a tilemap in bytes (tilemaps are 32x32 maps of indices to 2bpp-tiledata)
-static constexpr int TILEMAP_SIZE = 32*32;
+
+// The amount of tiles in a tilemap
+static constexpr int TILEMAP_TILECOUNT = 32;
+// Size of a tilemap in bytes (tilemaps are 32x32 maps of one-byte indices to 2bpp-tiledata)
+static constexpr int TILEMAP_SIZE_BYTE = TILEMAP_TILECOUNT * TILEMAP_TILECOUNT;
 
 struct Color_RGBA {
     uint32_t value;
@@ -29,13 +32,42 @@ struct Color_RGBA {
     constexpr operator uint32_t() const { return value; }
 };
 
-struct DMGPaletteColors_RGBA
+typedef struct DMGPaletteColors_RGBA
 {
     static constexpr Color_RGBA WHITE = Color_RGBA(0xE0, 0xF8, 0xD0, 0xFF);
     static constexpr Color_RGBA LIGHT_GRAY = Color_RGBA(0x88, 0xC0, 0x70, 0xFF);
     static constexpr Color_RGBA DARK_GRAY = Color_RGBA(0x34, 0x68, 0x56, 0xFF);
     static constexpr Color_RGBA BLACK = Color_RGBA(0x08, 0x18, 0x20, 0xFF);
-};
+
+    static constexpr Color_RGBA getColor(bool high, bool low)
+    {
+        if (high && low)
+            return BLACK;
+        else if (high && !low)
+            return DARK_GRAY;
+        else if (!high && low)
+            return LIGHT_GRAY;
+        else
+            return WHITE;
+    }
+
+    static const char* toString(Color_RGBA color)
+    {
+        switch (color)
+        {
+        case BLACK:
+            return "BLACK";
+        case DARK_GRAY:
+            return "DARK_GRAY";
+        case LIGHT_GRAY:
+            return "LIGHT_GRAY";
+        case WHITE:
+            return "WHITE";
+        default:
+            return "UNKNOWN";
+        }
+    }
+}DMGColors;
 
 typedef struct GB_Tile_Row
 {

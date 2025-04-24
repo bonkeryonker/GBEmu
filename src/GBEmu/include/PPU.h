@@ -1,8 +1,10 @@
 #ifndef PPU_H
 #define PPU_H
 #include <memory> // shared_ptr
+#include "SDL_render.h"
 #include "Graphics.h"
 #include "Globals.h"
+#include "Window.h"
 #include "Memory.h"
 
 namespace PPU
@@ -172,15 +174,20 @@ namespace PPU
 	class PPU
 	{
 	public:
-		PPU(std::shared_ptr<Memory> ram_ptr);
+		PPU(std::shared_ptr<Memory> ram_ptr, std::shared_ptr<Window> drawWindow);
 		~PPU();
 
 		void tick();
 
 		// Return the value stored in the passed register
 		const u8 getRegister(const Register r);
+
+		// Draws the passed tile at the coordinates derived from the tilemapIndex
+		// Returns: TRUE if successful
+		bool drawTile(Tile& tile, int tilemapIndex);
 	private:
 		std::shared_ptr<Memory> m_ram_ptr;
+		std::shared_ptr<Window> m_drawWindow;
 		PPU_STATES::STATE m_currentState;
 		u8** m_regArr;
 	private:

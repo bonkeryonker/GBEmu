@@ -2,9 +2,10 @@
 
 namespace PPU
 {
-	PPU::PPU(std::shared_ptr<Memory> ram_ptr)
+	PPU::PPU(std::shared_ptr<Memory> ram_ptr, std::shared_ptr<Window> drawWindow)
 	{
 		m_ram_ptr = ram_ptr;
+		m_drawWindow = drawWindow;
 		m_regArr = new u8* [REGISTER_COUNT]; // There are 11 PPU registers
 		initRegArray();
 	}
@@ -91,10 +92,13 @@ namespace PPU
 		bool isHighTilemapAddress = (bool)(getRegister(Registers::LCDC) & Registers::CONTROL_FLAGS::BG_TILEMAP);
 		u16 tilemapStartAddress = (isHighTilemapAddress) ? 0x9C00 : 0x9800;
 		auto tilemapIndex = 0;
-		for (auto tilemapIndex = 0; tilemapIndex < TILEMAP_SIZE; tilemapIndex++)
+		for (auto tilemapIndex = 0; tilemapIndex < TILEMAP_SIZE_BYTE; tilemapIndex++)
 		{
 			u8 tileDataAddr = m_ram_ptr->getItem(tilemapStartAddress + tilemapIndex);
 			Tile currentTile = getTile(tileDataAddr);
+			auto [high, low] = currentTile.toHex();
+			//GB_INFO("Tilemap[{}]: {:016X}{:016X}", tilemapIndex, low, high);
+			drawTile(currentTile, tilemapIndex);
 		}
 	}
 
@@ -117,6 +121,30 @@ namespace PPU
 			retVal.bytes[i] = m_ram_ptr->getItem(tileAddress + i);
 		}
 
+		return retVal;
+	}
+
+	bool PPU::drawTile(Tile& tile, int tilemapIndex)
+	{
+		//Calculate x and y coords of top-left tile pixel based on tilemapIndex
+		int windowY = (tilemapIndex % TILEMAP_TILECOUNT);
+		int windowX = 0;
+		bool retVal;
+		for (TileRow row : tile.rows)
+		{	
+			windowX = 0;
+			for (u8 i = 0x80; i > 0; i >>= 1)
+			{
+				bool lowColor = row.low & i;
+				bool hiColor = row.high & i;
+				Color_RGBA pxColor = DMGColors::getColor(hiColor, lowColor);
+				m_drawWindow->setDrawColor(pxColor);
+				retVal = m_drawWindow->drawPoint(windowX, windowY);
+				//GB_INFO("Window ({},{}): {}", windowX, windowY, DMGColors::toString(pxColor));
+				windowX++;
+			}
+			windowY++;
+		}
 		return retVal;
 	}
 }
